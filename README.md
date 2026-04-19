@@ -47,16 +47,14 @@ By listing them one after another, you are installing five of the most essential
 ### STEP 3 : LOADING & DESCRIPTION OF DATASET
 This table explains each step of the Exploratory Data Analysis (EDA) process for the `Mall_Customers.csv` dataset. These commands help you understand the quality, structure, and distribution of your data before you start any modeling or clustering.
 
-
-
-| Command Code | Purpose | Result for this Dataset |
-| :--- | :--- | :--- |
-| **A) `pd.read_csv(...)` & `.head()`** | **Loading & Previewing:** Reads the file into a table (DataFrame) and displays the first 5 rows to check the column headers and data format. | Loads the data and shows columns like `CustomerID`, `Gender`, `Age`, `Annual Income`, and `Spending Score`. |
-| **B) `customer_data.shape`** | **Dimensions:** Returns the "shape" of the dataset in terms of (Rows, Columns). | **(200, 5)**: This tells us there are 200 customers and 5 different attributes for each. |
-| **C) `customer_data.info()`** | **Data Metadata:** Shows the data types (e.g., integer, object), the number of non-null entries, and memory usage. | Confirms that most columns are integers, except for `Gender` (object/string). |
-| **D) `customer_data.isnull().sum()`** | **Missing Value Check:** Calculates the sum of null (empty) cells for every column. | All columns returned **0**, meaning the dataset is clean with no missing information. |
-| **E) `customer_data.duplicated().sum()`** | **Duplicate Check:** Counts how many rows are exact copies of another row. | Returns **0**, confirming that every customer entry in the list is unique. |
-| **F) `customer_data.describe()`** | **Statistical Summary:** Provides the mean, standard deviation, minimum, maximum, and quartiles for numerical columns. | Shows that the average customer is **39 years old** and the average income is **$60.56k**. 
-| **G) `customer_data['Gender'].value_counts()`** | **Category Distribution:** Counts how many times each unique value (Male/Female) appears in the Gender column. | Reveals the gender balance (e.g., 112 Females and 88 Males) to see if the data is biased toward one group. |
+| Command Code | Purpose |
+| :--- | :--- |
+| **A) `pd.read_csv('Mall_Customers.csv')` & `customer_data.head()`** | Loads the dataset and displays the first 5 rows to preview the data. |
+| **B) `customer_data.shape`** | Returns the number of rows and columns in the dataset. |
+| **C) `customer_data.info()`** | Provides a summary of the dataset, including data types and non-null counts. |
+| **D) `customer_data.isnull().sum()`** | Identifies the number of missing (null) values in each column. |
+| **E) `customer_data.duplicated().sum()`** | Checks for and counts duplicate rows in the dataset. |
+| **F) `customer_data.describe()`** | Generates descriptive statistics (mean, min, max, etc.) for numerical columns. |
+| **G) `customer_data['Gender'].value_counts()`** | Counts the frequency of unique values in the 'Gender' column. |
 
 
