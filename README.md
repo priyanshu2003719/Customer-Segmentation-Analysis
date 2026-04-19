@@ -21,11 +21,11 @@ The dataset has no missing values and consists of 4 numerical columns and 1 cate
 c) DATASERT SOURCE : - <a href ="https://github.com/TensorTitans01/customer-segmentation/blob/main/Mall_Customers.csv">DATASET SOURCE</a>
 
 ## PROJECT STEPS:
-STEP 1.  INSTALL LIBRARIES
+### STEP 1.  INSTALL LIBRARIES
 Install several Python libraries at once using pip which is the standard package manager for Python.
 
-STEP 2:IMPORT LIBRARIES
-###  The Libraries (The "Data Science Stack")
+### STEP 2:IMPORT LIBRARIES
+###  The Libraries 
 By listing them one after another, you are installing five of the most essential tools for data analysis and machine learning:
 
 | Library | Purpose |
