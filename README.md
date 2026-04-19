@@ -15,15 +15,6 @@ b)The dataset Mall_Customers.csv contains basic information about 200 customers 
 * **Age:** The age of the customer, ranging from **18 to 70 years** (average age is ~39).
 * **Annual Income (k$):** The annual income of the customer in thousands of dollars, ranging from **$15k to $137k**.
 * **Spending Score (1-100):** A score assigned by the mall based on the customer's spending behavior and nature, ranging from **1 to 99**.
-
-### **Summary Statistics**
-| Metric | Age | Annual Income (k$) | Spending Score (1-100) |
-| :--- | :--- | :--- | :--- |
-| **Count** | 200 | 200 | 200 |
-| **Mean** | 38.85 | 60.56 | 50.20 |
-| **Min** | 18 | 15 | 1 |
-| **Max** | 70 | 137 | 99 |
-
 The dataset has no missing values and consists of 4 numerical columns and 1 categorical column.
 
 c) DATASERT SOURCE : - <a href ="https://github.com/TensorTitans01/customer-segmentation/blob/main/Mall_Customers.csv">DATASET SOURCE</a>
