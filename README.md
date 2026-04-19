@@ -62,13 +62,19 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 
 <img width="540" height="471" alt="image" src="https://github.com/user-attachments/assets/d2016dc9-0151-4dce-8f7e-f59e7d490a40" />
 
-## counts the number of occurrences of each gender in your dataset and creates a vertical bar chart to represent those counts. It is used for exploratory data analysis (EDA) to check for "class imbalance." Understanding the gender split helps determine if your customer segments will be skewed toward one group or if the mall attracts a balanced audience.
+### **Code Explanation: Gender Distribution Bar Chart**
+
+**This code counts the number of occurrences of each gender in your dataset and creates a **vertical bar chart** to represent those counts.** **It is used for **exploratory data analysis (EDA)** to check for "class imbalance." Understanding the gender split helps determine if your customer segments will be skewed toward one group or if the mall attracts a balanced audience.**
+
+---
+
 ### **Understanding the Output (The Plot)**
+
+
+
 * **The X-Axis:** Displays the categories being compared (**Female** and **Male**).
 * **The Y-Axis:** Represents the **Count** (the total number of customers in each category).
 * **The Bars:** The height of each bar corresponds to the number of people.
     * **Female Bar:** You will notice this bar is higher (112), showing that women make up the majority of the sampled customers.
     * **Male Bar:** This bar is lower (88), showing fewer male customers in this specific dataset.
 * **`plt.bar_label`:** This is the line that adds the exact numbers (**112** and **88**) directly on top of the bars, making the chart much easier to read at a glance without having to guess the values from the Y-axis.
-
-
