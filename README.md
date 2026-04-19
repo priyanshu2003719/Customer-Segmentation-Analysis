@@ -58,7 +58,7 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 | **G) `customer_data['Gender'].value_counts()`** | Counts the frequency of unique values in the 'Gender' column. |
 
 ### STEP 4: VISUALIZATION
-## 1) **counts the number of occurrences of each gender in your dataset and creates a **vertical bar chart** to represent those counts.** **It is used for **exploratory data analysis (EDA)** to check for "class imbalance." Understanding the gender split helps determine if your customer segments will be skewed toward one group or if the mall attracts a balanced audience.**
+**1)counts the number of occurrences of each gender in your dataset and creates a **vertical bar chart** to represent those counts.** **It is used for **exploratory data analysis (EDA)** to check for "class imbalance." Understanding the gender split helps determine if your customer segments will be skewed toward one group or if the mall attracts a balanced audience.**
 
 ### **Understanding the Output (The Plot)**
 * **The X-Axis:** Displays the categories being compared (**Female** and **Male**).
