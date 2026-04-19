@@ -19,3 +19,30 @@ b)The dataset Mall_Customers.csv contains basic information about 200 customers 
 The dataset has no missing values and consists of 4 numerical columns and 1 categorical column.
 
 c) DATASERT SOURCE : - <a href ="https://github.com/TensorTitans01/customer-segmentation/blob/main/Mall_Customers.csv">DATASET SOURCE</a>
+
+## PROJECT STEPS:
+STEP 1.  INSTALL LIBRARIES
+Install several Python libraries at once using pip which is the standard package manager for Python.
+
+STEP 2:IMPORT LIBRARIES
+###  The Libraries (The "Data Science Stack")
+By listing them one after another, you are installing five of the most essential tools for data analysis and machine learning:
+
+| Library | Purpose |
+| :--- | :--- |
+| **`pandas`** | Used for **data manipulation**. It allows you to load CSV files (like your Mall Customers data) and work with tables (DataFrames). |
+| **`numpy`** | Short for "Numerical Python." It handles high-performance **mathematical operations** and multi-dimensional arrays. |
+| **`matplotlib`** | A foundational library for creating **static visualizations** like line graphs, scatter plots, and histograms. |
+| **`seaborn`** | Built on top of Matplotlib, it makes **statistical graphics** look more professional and easier to create (e.g., heatmaps or violin plots). |
+| **`scikit-learn`** | The go-to library for **Machine Learning**. It contains algorithms for clustering (like K-Means), classification, and regression. |
+| **`joblib`** | Used for **saving and loading** Python objects efficiently, specifically large NumPy arrays and trained machine learning models. |
+---
+### Why run this now?
+Since you are working with the `Mall_Customers.csv` dataset, you likely need these to:
+1.  **Clean and explore** the data (`pandas`, `numpy`).
+2.  **Visualize** customer clusters (`matplotlib`, `seaborn`).
+3.  **Train a model**, such as a K-Means clustering algorithm, to segment your customers (`scikit-learn`).
+4.  **Save your model** so you don't have to retrain it later (`joblib`).
+
+
+
