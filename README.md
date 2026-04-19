@@ -37,9 +37,8 @@ By listing them one after another, you are installing five of the most essential
 | **`scikit-learn`** | The go-to library for **Machine Learning**. It contains algorithms for clustering (like K-Means), classification, and regression. |
 | **`joblib`** | Used for **saving and loading** Python objects efficiently, specifically large NumPy arrays and trained machine learning models. |
 ---
-### Why run this now?
-Since you are working with the `Mall_Customers.csv` dataset, you likely need these to:
-1.  **Clean and explore** the data (`pandas`, `numpy`).
+### Working of libraries
+ 1.  **Clean and explore** the data (`pandas`, `numpy`).
 2.  **Visualize** customer clusters (`matplotlib`, `seaborn`).
 3.  **Train a model**, such as a K-Means clustering algorithm, to segment your customers (`scikit-learn`).
 4.  **Save your model** so you don't have to retrain it later (`joblib`).
