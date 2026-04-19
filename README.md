@@ -56,7 +56,7 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 | **C) `customer_data.info()`** | **Data Metadata:** Shows the data types (e.g., integer, object), the number of non-null entries, and memory usage. | Confirms that most columns are integers, except for `Gender` (object/string). |
 | **D) `customer_data.isnull().sum()`** | **Missing Value Check:** Calculates the sum of null (empty) cells for every column. | All columns returned **0**, meaning the dataset is clean with no missing information. |
 | **E) `customer_data.duplicated().sum()`** | **Duplicate Check:** Counts how many rows are exact copies of another row. | Returns **0**, confirming that every customer entry in the list is unique. |
-| **F) `customer_data.describe()`** | **Statistical Summary:** Provides the mean, standard deviation, minimum, maximum, and quartiles for numerical columns. | Shows that the average customer is **39 years old** and the average income is **$60.56k**. |
+| **F) `customer_data.describe()`** | **Statistical Summary:** Provides the mean, standard deviation, minimum, maximum, and quartiles for numerical columns. | Shows that the average customer is **39 years old** and the average income is **$60.56k**. 
 | **G) `customer_data['Gender'].value_counts()`** | **Category Distribution:** Counts how many times each unique value (Male/Female) appears in the Gender column. | Reveals the gender balance (e.g., 112 Females and 88 Males) to see if the data is biased toward one group. |
 
 
