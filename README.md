@@ -151,3 +151,15 @@ The chart reveals a **high-value customer skew**, meaning the business is except
 **In Short:** The visualization proves you have a "High-Value" customer base where the majority of your audience consists of your most profitable spenders.
 
 <img width="985" height="590" alt="image" src="https://github.com/user-attachments/assets/363acf02-c9e0-4d46-a6bd-1eab8aa76691" />
+
+### STEP 5: SELECTING FEATURES FOR CLUSTERING
+
+| Component | What it does | Why it is used |
+| :--- | :--- | :--- |
+| **`customer_data`** | Refers to your main dataset (the DataFrame). | To tell Python which source of information to look at. |
+| **`.iloc`** | Stands for "Integer Location." | To select data based on its numerical position (index) rather than its name. |
+| **`:`** | The "slice" operator for rows. | To ensure the model includes **every single customer** in the dataset, not just a few. |
+| **`[3, 4]`** | Selects the 4th and 5th columns. | To isolate **Annual Income** and **Spending Score**, the two variables that define customer behavior. |
+| **`.values`** | Converts the table into a NumPy array. | Machine Learning algorithms require **raw numbers** in an array format to perform mathematical calculations. |
+
+This is the **"Feature Selection"** step. It strips away irrelevant information like "Customer ID" or "Gender" and creates a clean matrix of numbers ($x$) that represents the relationship between how much a customer earns versus how much they spend. This matrix is the primary input used for clustering algorithms (like K-Means) to find patterns in your data.
