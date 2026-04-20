@@ -200,7 +200,9 @@ It tells a clear story about how your customers should be segmented:
 
 **In short:** It builds a decision-making map. The "elbow" at 5 proves that your data naturally settles into five distinct customer personas.
 
+
 <img width="1035" height="656" alt="image" src="https://github.com/user-attachments/assets/ef033628-2ce7-4dda-95e9-37a5c4e75cd3" />
+
 
 
 
