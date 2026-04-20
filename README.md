@@ -261,7 +261,7 @@ This visualization is the "Grand Reveal." It proves that your customers aren't j
 
 ### **Why this code is used**
 * **Identification:** Before this line, the "clusters" only existed as a separate list of numbers in the computer's memory. This line attaches those numbers to the specific customers they belong to.
-* **Data Organization:** It allows you to see exactly which category a specific person falls into. For example, you can now see that "Customer #45" is in Cluster 2.
+* **Data Organization:** It allows you to see exactly which category a specific person falls into. For example, you can now see that "Customer 45" is in Cluster 2.
 * **Future Filtering:** Once this column is added, you can easily filter your data to perform targeted actions, such as:
     * *Show me only the email addresses of customers in Cluster 3.*
     * *Calculate the average age of customers in Cluster 0.*
