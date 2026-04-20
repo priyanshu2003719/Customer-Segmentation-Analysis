@@ -202,7 +202,9 @@ It tells a clear story about how your customers should be segmented:
 
 <img width="1035" height="656" alt="image" src="https://github.com/user-attachments/assets/ef033628-2ce7-4dda-95e9-37a5c4e75cd3" />
 
-**3)This code is the final "execution" phase of your clustering analysis. It takes everything you learned from the Elbow Method and applies it to segment your customers into definitive groups.**
+
+
+**3) The final "execution" phase of your clustering analysis. It takes everything you learned from the Elbow Method and applies it to segment your customers into definitive groups.**
 
 | Component | What it does | Why it is used |
 | :--- | :--- | :--- |
