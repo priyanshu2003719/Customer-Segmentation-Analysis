@@ -366,7 +366,8 @@ You have successfully completed the entire Data Science pipeline:
 
 **In short:** It turned a messy spreadsheet of 200 customers into a **permanent, reusable AI tool** that can guide business marketing decisions forever.
 
-## PROJECT DASHBOARD:- <a href =" https://github.com/priyanshu2003719/Customer-Segmentation-Analysis/blob/main/customer_app.html">DASHBORD</a>
+## PROJECT DASHBOARD:
+- <a href =" https://github.com/priyanshu2003719/Customer-Segmentation-Analysis/blob/main/customer_app.html">DASHBORD</a>
 
 **MallIQ Intelligence Dashboard** — a complete visual overhaul. 
 
