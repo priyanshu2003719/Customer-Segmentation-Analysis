@@ -340,9 +340,7 @@ Based on the coordinates provided (**70** Income, **80** Spending), the code wil
 
 **In short:** This is the "User Interface" of model. It takes raw numbers about a person and tells the business exactly how to treat that customer based on the persona names you created earlier.
 
-### STEP 6: SAVING THE MODEL: 
-
-- <a href ="https://github.com/priyanshu2003719/Customer-Segmentation-Analysis/blob/main/customer_segmentation_model.pkl">MODEL SAVED</a>
+### STEP 6: SAVING THE MODEL: - <a href ="https://github.com/priyanshu2003719/Customer-Segmentation-Analysis/blob/main/customer_segmentation_model.pkl">MODEL SAVED</a>
 
 This  is the **"Storage"** phase of your project.
 
