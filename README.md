@@ -20,7 +20,7 @@ The dataset has no missing values and consists of 4 numerical columns and 1 cate
 
 c) DATASERT SOURCE : - <a href ="https://github.com/TensorTitans01/customer-segmentation/blob/main/Mall_Customers.csv">DATASET SOURCE</a>
 
-## PROJECT STEPS:
+## PROJECT STEPS: <a href ="https://colab.research.google.com/drive/1p76jBBnJThn88rumcPSykaa1Mj85HoF-#scrollTo=9WvAb56Ohdv7">FULL PROJECT</a>
 
 ### STEP 1.  INSTALL LIBRARIES
 Install several Python libraries at once using pip which is the standard package manager for Python.
