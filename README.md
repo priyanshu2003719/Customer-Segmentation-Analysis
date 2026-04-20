@@ -276,18 +276,16 @@ This visualization is the "Grand Reveal." It proves that your customers aren't j
 * **Strategic Comparison:** Using a `1x2` subplot layout allows decision-makers to see the relationship between earning and spending simultaneously, rather than flipping between two different charts.
 * **Data Precision:** The `bar_label` with `fmt='%.1f'` provides the exact average values, ensuring the business knows the precise financial power of each segment.
 
----
-
 ### **Analysis of the Output**
 The charts show the distinct "Financial DNA" of your five clusters (C0 through C4):
 
-**1. Average Income by Cluster (Left Chart)**
+**A) Average Income by Cluster (Left Chart)**
 * **The Wealthy:** Clusters **C1 (86.5k)** and **C3 (88.2k)** are your highest earners.
 * **The Middle Class:** Cluster **C0 (55.3k)** represents your mid-tier earners.
 * **The Budget Tier:** Clusters **C2 (25.7k)** and **C4 (26.3k)** represent your lower-income segments.
 
 
-**2. Average Spending Score by Cluster (Right Chart)**
+**B) Average Spending Score by Cluster (Right Chart)**
 * **The Big Spenders:** Clusters **C1 (82.1)** and **C2 (79.4)** are the most active shoppers. Interestingly, **C2** spends heavily despite having the lowest average income.
 * **The Moderate Spenders:** Cluster **C0 (49.5)** sits right in the middle.
 * **The Conservative Spenders:** Clusters **C3 (17.1)** and **C4 (20.9)** spend the least. Note that **C3** has a very high income but chooses not to spend, marking them as a "missed opportunity" for marketing.
@@ -296,4 +294,28 @@ The charts show the distinct "Financial DNA" of your five clusters (C0 through C
 This visualization proves that **Income does not always equal Spending.** It highlights that your most profitable customers are in **C1** (High Income/High Spending), while **C2** (Low Income/High Spending) represents a surprisingly loyal, albeit less wealthy, fan base.
 
 <img width="1389" height="590" alt="image" src="https://github.com/user-attachments/assets/8fa53ebe-aa8f-4b6e-9f4b-79c1bf282b91" />
+
+**3)This prepares the final labeling system for your segmentation model. It ensures the mathematical clusters are ready to be translated into human-readable business categories.**
+
+* **Final Fitting:** The `KMeans(...).fit(x)` line forces the algorithm to finalize the boundaries of the 5 clusters based on the Annual Income and Spending Score data.
+* **Persona Naming:** The `clusters_name` list acts as a "translation key." Without this, your customers would just be "Group 0" or "Group 1." Now, they are given descriptive names based on their financial behavior.
+
+### **Why these specific names were used**
+Based on the previous visualizations, here is the logic for these labels:
+
+| Cluster Name | Typical Behavior |
+| :--- | :--- |
+| **Careful Customers** | High Income, but very low spending. They are financially stable but "tight-fisted." |
+| **Standard Customers** | Middle income and middle spending. They represent the "average" consumer. |
+| **Target Customers** | **High Income and High Spending.** These are the most profitable people to market to. |
+| **Careless Customers** | Low Income, but high spending. Often impulsive or younger shoppers. |
+| **Sensible Customers** | Low Income and low spending. Budget-conscious people who buy only essentials. |
+
+### **Strategic Value**
+By mapping these names to the clusters, the data moves from being a "programming project" to a **marketing roadmap**. A business can now design a different email campaign for each group:
+* **To Careful Customers:** Send high-value coupons to encourage them to start spending.
+* **To Target Customers:** Send "VIP/Early Access" invitations to reward their loyalty.
+* **To Sensible Customers:** Send "Bundle and Save" or "Budget Friendly" offers.
+
+**In short:** This code creates the "identity" for each group, allowing the business to treat different people differently based on their actual spending habits.
 
