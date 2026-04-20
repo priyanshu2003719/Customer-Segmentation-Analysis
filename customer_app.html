@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MallIQ — Intelligence Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #090b10;
+  --surface: #0e1118;
+  --surface2: #13161f;
+  --surface3: #1a1e2a;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.10);
+  --text: #e8eaf2;
+  --text2: #8a90a8;
+  --text3: #4e5468;
+  --r: #ff4d6d;
+  --b: #4d79ff;
+  --g: #00d68f;
+  --y: #ffc83d;
+  --p: #b97fff;
+  --c: #00cfff;
+  --glow-r: rgba(255,77,109,0.15);
+  --glow-b: rgba(77,121,255,0.15);
+  --glow-g: rgba(0,214,143,0.15);
+  --glow-p: rgba(185,127,255,0.15);
+  --glow-c: rgba(0,207,255,0.15);
+  --female: #ff4d8d;
+  --male: #4d79ff;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --mono: 'DM Mono', monospace;
+  --head: 'Syne', sans-serif;
+  --serif: 'Instrument Serif', serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+::selection { background: rgba(77,121,255,0.3); color: #fff; }
+
+body {
+  font-family: var(--mono);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* GRID NOISE BACKGROUND */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(77,121,255,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(77,121,255,0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* AMBIENT GLOW */
+.ambient {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+  opacity: 0.5;
+}
+.ambient-1 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(77,121,255,0.12), transparent 70%); top: -200px; right: -100px; }
+.ambient-2 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(0,214,143,0.08), transparent 70%); bottom: 20%; left: -150px; }
+.ambient-3 { width: 300px; height: 300px; background: radial-gradient(circle, rgba(255,77,109,0.06), transparent 70%); bottom: -100px; right: 30%; }
+
+/* HEADER */
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(9,11,16,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-mark {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, var(--b), var(--p));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--head);
+  font-weight: 800;
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: -0.5px;
+  box-shadow: 0 0 20px rgba(77,121,255,0.4);
+}
+
+.logo-text {
+  font-family: var(--head);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.3px;
+}
+.logo-text span { color: var(--b); }
+
+.header-center {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 5px 14px;
+}
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: var(--g);
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 8px var(--g);
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+.live-text { font-size: 11px; color: var(--g); font-family: var(--mono); font-weight: 500; letter-spacing: 1px; text-transform: uppercase; }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chip {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+.chip-blue { color: var(--b); border-color: rgba(77,121,255,0.3); background: rgba(77,121,255,0.07); }
+.chip-green { color: var(--g); border-color: rgba(0,214,143,0.3); background: rgba(0,214,143,0.07); }
+
+.header-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* MAIN */
+.main {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem 2rem 3rem;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* PAGE TITLE */
+.page-title {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+.page-title h2 {
+  font-family: var(--serif);
+  font-size: 36px;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1;
+}
+.page-title h2 em {
+  font-style: normal;
+  color: var(--b);
+}
+.page-title-meta { font-size: 11px; color: var(--text3); letter-spacing: 0.5px; }
+
+/* FILTER BAR */
+.filter-bar {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+}
+.filter-bar::before {
+  content: 'FILTERS';
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--head);
+  font-size: 64px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.015);
+  pointer-events: none;
+  letter-spacing: -2px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 130px;
+}
+.filter-label {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: var(--head);
+}
+
+.filter-select {
+  height: 34px;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 0 10px;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%234e5468'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+  transition: border-color .2s, box-shadow .2s;
+}
+.filter-select:hover, .filter-select:focus {
+  border-color: rgba(77,121,255,0.5);
+  box-shadow: 0 0 0 3px rgba(77,121,255,0.08);
+}
+
+.range-wrap { display: flex; flex-direction: column; gap: 6px; }
+.range-row { display: flex; align-items: center; gap: 8px; }
+.range-key { font-size: 9px; color: var(--text3); width: 16px; text-transform: uppercase; letter-spacing: 0.5px; }
+input[type=range] {
+  width: 110px;
+  height: 3px;
+  appearance: none;
+  background: linear-gradient(to right, var(--b) 0%, var(--b) 50%, rgba(255,255,255,0.1) 50%);
+  border-radius: 2px;
+  cursor: pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  width: 13px;
+  height: 13px;
+  background: var(--b);
+  border-radius: 50%;
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 8px rgba(77,121,255,0.6);
+  transition: transform .15s;
+}
+input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.3); }
+.range-val {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--b);
+  min-width: 30px;
+  font-family: var(--mono);
+}
+
+.filter-reset {
+  height: 34px;
+  padding: 0 16px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  letter-spacing: 0.5px;
+  transition: all .2s;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+.filter-reset:hover {
+  border-color: rgba(255,77,109,0.4);
+  color: var(--r);
+  background: rgba(255,77,109,0.06);
+}
+
+/* KPI CARDS */
+.kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.kpi-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: transform .2s, border-color .2s, box-shadow .2s;
+}
+.kpi-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border2);
+}
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  bottom: -30px;
+  right: -30px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  opacity: 0.4;
+  transition: opacity .3s;
+}
+.kpi-card:hover::after { opacity: 0.7; }
+.kpi-card-0::after { background: radial-gradient(circle, var(--b), transparent 70%); }
+.kpi-card-1::after { background: radial-gradient(circle, var(--y), transparent 70%); }
+.kpi-card-2::after { background: radial-gradient(circle, var(--g), transparent 70%); }
+.kpi-card-3::after { background: radial-gradient(circle, var(--p), transparent 70%); }
+
+.kpi-card:hover.kpi-card-0 { box-shadow: 0 8px 32px rgba(77,121,255,0.12); }
+.kpi-card:hover.kpi-card-1 { box-shadow: 0 8px 32px rgba(255,200,61,0.12); }
+.kpi-card:hover.kpi-card-2 { box-shadow: 0 8px 32px rgba(0,214,143,0.12); }
+.kpi-card:hover.kpi-card-3 { box-shadow: 0 8px 32px rgba(185,127,255,0.12); }
+
+.kpi-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.kpi-icon-wrap {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.kpi-icon-0 { background: rgba(77,121,255,0.12); border: 1px solid rgba(77,121,255,0.2); }
+.kpi-icon-1 { background: rgba(255,200,61,0.12); border: 1px solid rgba(255,200,61,0.2); }
+.kpi-icon-2 { background: rgba(0,214,143,0.12); border: 1px solid rgba(0,214,143,0.2); }
+.kpi-icon-3 { background: rgba(185,127,255,0.12); border: 1px solid rgba(185,127,255,0.2); }
+
+.kpi-trend {
+  font-size: 10px;
+  font-family: var(--mono);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+.kpi-trend-up { color: var(--g); background: rgba(0,214,143,0.1); }
+.kpi-trend-neutral { color: var(--y); background: rgba(255,200,61,0.1); }
+
+.kpi-label {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: var(--head);
+  margin-bottom: 6px;
+}
+.kpi-value {
+  font-family: var(--head);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 5px;
+  letter-spacing: -1px;
+}
+.kpi-value-0 { color: var(--b); }
+.kpi-value-1 { color: var(--y); }
+.kpi-value-2 { color: var(--g); }
+.kpi-value-3 { color: var(--p); }
+
+.kpi-sub { font-size: 11px; color: var(--text3); }
+
+/* GENDER ROW */
+.gender-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.gender-card {
+  background: var(--surface2);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform .2s, box-shadow .2s;
+}
+.gender-card:hover { transform: translateY(-2px); }
+.gender-card-f { border-left: 2px solid var(--female); }
+.gender-card-f:hover { box-shadow: -4px 0 30px rgba(255,77,141,0.1), 0 8px 30px rgba(255,77,141,0.05); }
+.gender-card-m { border-left: 2px solid var(--male); }
+.gender-card-m:hover { box-shadow: -4px 0 30px rgba(77,121,255,0.1), 0 8px 30px rgba(77,121,255,0.05); }
+
+.gender-ring {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+.gender-info { flex: 1; }
+.gender-label {
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-family: var(--head);
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+.gender-count {
+  font-family: var(--head);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -1px;
+}
+.gender-count-f { color: var(--female); }
+.gender-count-m { color: var(--male); }
+
+.gender-bar-track {
+  height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+.gender-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .8s cubic-bezier(.4,0,.2,1);
+}
+.gender-bar-fill-f { background: linear-gradient(90deg, var(--female), #ff9fbd); }
+.gender-bar-fill-m { background: linear-gradient(90deg, var(--male), #8fb3ff); }
+
+.gender-pct { font-size: 11px; color: var(--text3); }
+
+.gender-bg-icon {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 80px;
+  opacity: 0.04;
+  pointer-events: none;
+}
+
+/* SECTION DIVIDER */
+.section-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+  margin-top: 0.25rem;
+}
+.section-head-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-family: var(--head);
+  white-space: nowrap;
+}
+.section-head-line { flex: 1; height: 1px; background: var(--border); }
+.section-head-num {
+  font-family: var(--head);
+  font-size: 9px;
+  color: var(--text3);
+  font-weight: 700;
+}
+
+/* CHART CARD */
+.chart-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  transition: border-color .2s;
+}
+.chart-card:hover { border-color: var(--border2); }
+.chart-head { margin-bottom: 1rem; }
+.chart-title {
+  font-family: var(--head);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+  letter-spacing: -0.2px;
+}
+.chart-sub { font-size: 10px; color: var(--text3); font-family: var(--mono); letter-spacing: 0.3px; }
+.chart-wrap { position: relative; width: 100%; }
+
+/* GRIDS */
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.grid-1 { margin-bottom: 1rem; }
+
+/* LEGEND */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10px;
+  color: var(--text2);
+  font-family: var(--mono);
+}
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* CLUSTER BADGES */
+.cluster-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+.cluster-badge {
+  font-size: 10px;
+  font-weight: 600;
+  font-family: var(--mono);
+  padding: 3px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.3px;
+}
+
+/* D3 CHARTS */
+.d3-chart svg { width: 100%; overflow: visible; }
+.d3-chart text { font-family: var(--mono); }
+
+/* NO DATA */
+.no-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 12px;
+  color: var(--text3);
+  font-family: var(--mono);
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.15); }
+
+/* FADE IN ANIMATIONS */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.kpi-card { animation: fadeUp .4s ease both; }
+.kpi-card:nth-child(1) { animation-delay: .05s; }
+.kpi-card:nth-child(2) { animation-delay: .1s; }
+.kpi-card:nth-child(3) { animation-delay: .15s; }
+.kpi-card:nth-child(4) { animation-delay: .2s; }
+
+/* CANVAS TOOLTIP */
+.custom-tooltip {
+  position: fixed;
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 11px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  z-index: 200;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+@media (max-width: 1100px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 750px) {
+  .main { padding: 1rem; }
+  .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .gender-row { grid-template-columns: 1fr; }
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .header-center { display: none; }
+  .kpi-value { font-size: 28px; }
+}
+</style>
+</head>
+<body>
+
+<div class="ambient ambient-1"></div>
+<div class="ambient ambient-2"></div>
+<div class="ambient ambient-3"></div>
+
+<div class="header">
+  <div class="logo">
+    <div class="logo-mark">MI</div>
+    <div class="logo-text">Mall<span>IQ</span></div>
+  </div>
+  <div class="header-center">
+    <div class="pulse-dot"></div>
+    <span class="live-text">Live Dashboard</span>
+  </div>
+  <div class="header-right">
+    <span class="chip chip-blue">200 Customers</span>
+    <span class="chip chip-green">K-Means k=5</span>
+    <span class="header-time" id="clock">—</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="page-title">
+    <div>
+      <h2>Customer <em>Intelligence</em> Report</h2>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px;font-family:var(--mono)">Behavioral segmentation · Annual income & spending analysis · Gender profiling</div>
+    </div>
+    <div class="page-title-meta" id="filter-status">Showing all 200 customers</div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <span class="filter-label">Gender</span>
+      <select class="filter-select" id="f-gender">
+        <option value="all">All Genders</option>
+        <option value="Female">Female</option>
+        <option value="Male">Male</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Age Group</span>
+      <select class="filter-select" id="f-age">
+        <option value="all">All Ages</option>
+        <option value="18-25">18 – 25</option>
+        <option value="26-35">26 – 35</option>
+        <option value="36-50">36 – 50</option>
+        <option value="51+">51 +</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Annual Income (k$)</span>
+      <div class="range-wrap">
+        <div class="range-row">
+          <span class="range-key">Min</span>
+          <input type="range" id="f-inc-min" min="15" max="137" value="15" step="1">
+          <span class="range-val" id="lbl-inc-min">15</span>
+        </div>
+        <div class="range-row">
+          <span class="range-key">Max</span>
+          <input type="range" id="f-inc-max" min="15" max="137" value="137" step="1">
+          <span class="range-val" id="lbl-inc-max">137</span>
+        </div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Spending Score</span>
+      <div class="range-wrap">
+        <div class="range-row">
+          <span class="range-key">Min</span>
+          <input type="range" id="f-sp-min" min="1" max="100" value="1" step="1">
+          <span class="range-val" id="lbl-sp-min">1</span>
+        </div>
+        <div class="range-row">
+          <span class="range-key">Max</span>
+          <input type="range" id="f-sp-max" min="1" max="100" value="100" step="1">
+          <span class="range-val" id="lbl-sp-max">100</span>
+        </div>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Segment</span>
+      <select class="filter-select" id="f-cluster">
+        <option value="all">All Segments</option>
+        <option value="0">① Budget Spenders</option>
+        <option value="1">② Standard</option>
+        <option value="2">③ Careful</option>
+        <option value="3">④ Target</option>
+        <option value="4">⑤ Premium</option>
+      </select>
+    </div>
+    <button class="filter-reset" id="btn-reset">✕ Reset</button>
+  </div>
+
+  <!-- KPIs -->
+  <div class="kpi-row">
+    <div class="kpi-card kpi-card-0">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-icon-0">👥</div>
+        <span class="kpi-trend kpi-trend-up">↑ Active</span>
+      </div>
+      <div class="kpi-label">Total Customers</div>
+      <div class="kpi-value kpi-value-0" id="kpi-total">200</div>
+      <div class="kpi-sub">in current selection</div>
+    </div>
+    <div class="kpi-card kpi-card-1">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-icon-1">📅</div>
+        <span class="kpi-trend kpi-trend-neutral">Avg</span>
+      </div>
+      <div class="kpi-label">Average Age</div>
+      <div class="kpi-value kpi-value-1" id="kpi-age">38.9</div>
+      <div class="kpi-sub">years old</div>
+    </div>
+    <div class="kpi-card kpi-card-2">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-icon-2">💵</div>
+        <span class="kpi-trend kpi-trend-up">k USD</span>
+      </div>
+      <div class="kpi-label">Avg Annual Income</div>
+      <div class="kpi-value kpi-value-2" id="kpi-income">60.6k</div>
+      <div class="kpi-sub">per year</div>
+    </div>
+    <div class="kpi-card kpi-card-3">
+      <div class="kpi-top">
+        <div class="kpi-icon-wrap kpi-icon-3">🛒</div>
+        <span class="kpi-trend kpi-trend-up">/ 100</span>
+      </div>
+      <div class="kpi-label">Avg Spending Score</div>
+      <div class="kpi-value kpi-value-3" id="kpi-spend">50.2</div>
+      <div class="kpi-sub">out of 100</div>
+    </div>
+  </div>
+
+  <!-- GENDER -->
+  <div class="gender-row">
+    <div class="gender-card gender-card-f">
+      <svg class="gender-ring" id="gender-ring-f" viewBox="0 0 60 60"></svg>
+      <div class="gender-info">
+        <div class="gender-label">Female Customers</div>
+        <div class="gender-count gender-count-f" id="dist-female">112</div>
+        <div class="gender-bar-track"><div class="gender-bar-fill gender-bar-fill-f" id="dist-female-bar" style="width:56%"></div></div>
+        <div class="gender-pct" id="dist-female-pct">56.0% of selection</div>
+      </div>
+      <div class="gender-bg-icon">♀</div>
+    </div>
+    <div class="gender-card gender-card-m">
+      <svg class="gender-ring" id="gender-ring-m" viewBox="0 0 60 60"></svg>
+      <div class="gender-info">
+        <div class="gender-label">Male Customers</div>
+        <div class="gender-count gender-count-m" id="dist-male">88</div>
+        <div class="gender-bar-track"><div class="gender-bar-fill gender-bar-fill-m" id="dist-male-bar" style="width:44%"></div></div>
+        <div class="gender-pct" id="dist-male-pct">44.0% of selection</div>
+      </div>
+      <div class="gender-bg-icon">♂</div>
+    </div>
+  </div>
+
+  <!-- CORE DISTRIBUTIONS -->
+  <div class="section-head">
+    <div class="section-head-label">Core Distributions</div>
+    <div class="section-head-line"></div>
+    <div class="section-head-num">01</div>
+  </div>
+
+  <div class="grid-3" style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Gender Split</div>
+        <div class="chart-sub">Donut · Female vs Male breakdown</div>
+      </div>
+      <div id="legend-pie" class="legend"></div>
+      <div class="chart-wrap" style="height:200px"><canvas id="chart-pie"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Age Distribution</div>
+        <div class="chart-sub">Histogram · frequency by age group</div>
+      </div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-age-hist"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Spending by Age Group</div>
+        <div class="chart-sub">Area line · avg score per cohort</div>
+      </div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chart-spend-line"></canvas></div>
+    </div>
+  </div>
+
+  <!-- SCATTER + BAR -->
+  <div class="grid-2" style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Income vs Spending Score</div>
+        <div class="chart-sub">Scatter · relationship by gender</div>
+      </div>
+      <div id="legend-scatter" class="legend"></div>
+      <div class="chart-wrap" style="height:260px"><canvas id="chart-scatter"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Spending Score Sample</div>
+        <div class="chart-sub">Bar · sampled customer IDs (color = gender)</div>
+      </div>
+      <div class="chart-wrap" style="height:280px"><canvas id="chart-bar-id"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CLUSTER -->
+  <div class="section-head" style="margin-top:0.5rem">
+    <div class="section-head-label">Customer Segmentation</div>
+    <div class="section-head-line"></div>
+    <div class="section-head-num">02</div>
+  </div>
+
+  <div class="grid-1">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">K-Means Clusters — Income × Spending</div>
+        <div class="chart-sub">5-segment model · each dot = one customer</div>
+      </div>
+      <div id="cluster-legend" class="cluster-legend"></div>
+      <div class="chart-wrap" style="height:320px"><canvas id="chart-cluster"></canvas></div>
+    </div>
+  </div>
+
+  <!-- ADVANCED -->
+  <div class="section-head" style="margin-top:1rem">
+    <div class="section-head-label">Advanced Analytics</div>
+    <div class="section-head-line"></div>
+    <div class="section-head-num">03</div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Density Curves (KDE)</div>
+        <div class="chart-sub">Kernel density · age & income distribution</div>
+      </div>
+      <div class="chart-wrap d3-chart" id="kde-chart" style="height:250px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Correlation Heatmap</div>
+        <div class="chart-sub">Pearson r · Age, Income, Spending Score</div>
+      </div>
+      <div class="chart-wrap d3-chart" id="heatmap-chart" style="height:250px"></div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:1rem">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Box Plot — Spending by Segment</div>
+        <div class="chart-sub">IQR + outliers · cluster stability</div>
+      </div>
+      <div class="chart-wrap d3-chart" id="box-chart" style="height:270px"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Violin Plot — Spending by Gender</div>
+        <div class="chart-sub">KDE density · distribution depth</div>
+      </div>
+      <div class="chart-wrap d3-chart" id="violin-chart" style="height:270px"></div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:2rem">
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Radar — Segment Profiling</div>
+        <div class="chart-sub">Normalised · Age, Income, Spending</div>
+      </div>
+      <div class="chart-wrap" style="height:290px"><canvas id="chart-radar"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-head">
+        <div class="chart-title">Parallel Coordinates</div>
+        <div class="chart-sub">Multidimensional patterns · gender overlay</div>
+      </div>
+      <div class="chart-wrap d3-chart" id="parallel-chart" style="height:290px"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── CLOCK ──
+function updateClock() {
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', {hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── RAW DATA ──
+const RAW=[
+[1,"Male",19,15,39],[2,"Male",21,15,81],[3,"Female",20,16,6],[4,"Female",23,16,77],[5,"Female",31,17,40],
+[6,"Female",22,17,76],[7,"Female",35,18,6],[8,"Female",23,18,94],[9,"Male",64,19,3],[10,"Female",30,19,72],
+[11,"Male",67,19,14],[12,"Female",35,19,99],[13,"Female",58,20,15],[14,"Female",24,20,77],[15,"Male",37,20,13],
+[16,"Male",22,20,79],[17,"Female",35,21,35],[18,"Male",20,21,66],[19,"Male",52,23,29],[20,"Female",35,23,98],
+[21,"Male",35,24,35],[22,"Male",25,24,73],[23,"Female",46,25,5],[24,"Male",31,25,73],[25,"Female",54,28,14],
+[26,"Male",29,28,82],[27,"Female",45,28,32],[28,"Male",35,28,61],[29,"Female",40,29,31],[30,"Female",23,29,87],
+[31,"Male",60,30,4],[32,"Female",21,30,73],[33,"Male",53,33,4],[34,"Male",18,33,92],[35,"Female",49,33,14],
+[36,"Female",21,33,81],[37,"Female",42,34,17],[38,"Female",30,34,73],[39,"Female",36,37,26],[40,"Female",20,37,75],
+[41,"Female",65,38,35],[42,"Male",24,38,92],[43,"Male",48,39,36],[44,"Female",31,39,61],[45,"Female",49,39,28],
+[46,"Female",24,39,65],[47,"Female",50,40,55],[48,"Female",27,40,47],[49,"Female",29,40,42],[50,"Female",31,40,42],
+[51,"Female",49,42,52],[52,"Male",33,42,60],[53,"Female",31,43,54],[54,"Male",59,43,60],[55,"Female",50,43,45],
+[56,"Male",47,43,41],[57,"Female",51,44,50],[58,"Male",69,44,46],[59,"Female",27,46,51],[60,"Male",53,46,46],
+[61,"Male",70,46,56],[62,"Male",19,46,55],[63,"Female",67,47,52],[64,"Female",54,47,59],[65,"Male",63,48,51],
+[66,"Male",18,48,59],[67,"Female",43,48,50],[68,"Female",68,48,48],[69,"Male",19,48,59],[70,"Female",32,48,47],
+[71,"Male",70,49,55],[72,"Female",47,49,42],[73,"Female",60,50,49],[74,"Female",60,50,56],[75,"Male",59,54,47],
+[76,"Male",26,54,54],[77,"Female",45,54,53],[78,"Male",40,54,48],[79,"Female",23,54,52],[80,"Female",49,54,42],
+[81,"Male",57,54,51],[82,"Male",38,54,55],[83,"Male",67,54,41],[84,"Female",46,54,44],[85,"Female",21,54,57],
+[86,"Male",48,54,46],[87,"Female",55,57,58],[88,"Female",22,57,55],[89,"Female",34,58,60],[90,"Female",50,58,46],
+[91,"Female",68,59,55],[92,"Male",18,59,41],[93,"Male",48,60,49],[94,"Female",40,60,40],[95,"Female",32,60,42],
+[96,"Male",24,60,52],[97,"Female",47,60,47],[98,"Female",27,60,50],[99,"Male",48,61,42],[100,"Male",20,61,49],
+[101,"Female",23,62,41],[102,"Female",49,62,48],[103,"Male",67,62,59],[104,"Male",26,62,55],[105,"Male",49,62,56],
+[106,"Female",21,62,42],[107,"Female",66,63,50],[108,"Male",54,63,46],[109,"Male",68,63,43],[110,"Male",66,63,48],
+[111,"Male",65,63,52],[112,"Female",19,63,54],[113,"Female",38,64,42],[114,"Male",19,64,46],[115,"Female",18,65,48],
+[116,"Female",19,65,50],[117,"Female",63,65,43],[118,"Female",49,65,59],[119,"Female",51,67,43],[120,"Female",50,67,57],
+[121,"Male",27,67,56],[122,"Female",38,67,40],[123,"Female",40,69,58],[124,"Male",39,69,91],[125,"Female",23,70,29],
+[126,"Female",31,70,77],[127,"Male",43,71,35],[128,"Male",40,71,95],[129,"Male",59,71,11],[130,"Male",38,71,75],
+[131,"Male",47,71,9],[132,"Male",39,71,75],[133,"Female",25,72,34],[134,"Female",31,72,71],[135,"Male",20,73,5],
+[136,"Female",29,73,88],[137,"Female",44,73,7],[138,"Male",32,73,73],[139,"Male",19,74,10],[140,"Female",35,74,72],
+[141,"Female",57,75,5],[142,"Male",32,75,93],[143,"Female",28,76,40],[144,"Female",32,76,87],[145,"Male",25,77,12],
+[146,"Male",28,77,97],[147,"Male",48,77,36],[148,"Female",32,77,74],[149,"Female",34,78,22],[150,"Male",34,78,90],
+[151,"Male",43,78,17],[152,"Male",39,78,88],[153,"Female",44,78,20],[154,"Female",38,78,76],[155,"Female",47,78,16],
+[156,"Female",27,78,89],[157,"Male",37,78,1],[158,"Female",30,78,78],[159,"Male",34,78,1],[160,"Female",30,78,73],
+[161,"Female",56,79,35],[162,"Female",29,79,83],[163,"Male",19,81,5],[164,"Female",31,81,93],[165,"Male",50,85,26],
+[166,"Female",36,85,75],[167,"Male",42,86,20],[168,"Female",33,86,95],[169,"Female",36,87,27],[170,"Male",32,87,63],
+[171,"Male",40,87,13],[172,"Male",28,87,75],[173,"Male",36,87,10],[174,"Male",36,87,92],[175,"Female",52,88,13],
+[176,"Female",30,88,86],[177,"Male",58,88,15],[178,"Male",27,88,69],[179,"Male",59,93,14],[180,"Male",35,93,90],
+[181,"Female",37,97,32],[182,"Female",32,97,86],[183,"Male",46,98,15],[184,"Female",29,98,88],[185,"Female",41,99,39],
+[186,"Male",30,99,97],[187,"Female",54,101,24],[188,"Male",28,101,68],[189,"Female",41,103,17],[190,"Female",36,103,85],
+[191,"Female",34,103,23],[192,"Female",32,103,69],[193,"Male",33,113,8],[194,"Female",38,113,91],[195,"Female",47,120,16],
+[196,"Female",35,120,79],[197,"Female",45,126,28],[198,"Male",32,126,74],[199,"Male",32,137,18],[200,"Male",30,137,83]
+];
+
+// ── K-MEANS ──
+function kMeans(data,k=5,iterations=100){
+  const pts=data.map(r=>[r[3],r[4]]);
+  let centers=[pts[10],pts[40],pts[90],pts[140],pts[170]].map(c=>[...c]);
+  let labels=new Array(pts.length).fill(0);
+  for(let it=0;it<iterations;it++){
+    labels=pts.map(p=>{
+      let best=0,bestD=Infinity;
+      centers.forEach((c,ci)=>{const d=(p[0]-c[0])**2+(p[1]-c[1])**2;if(d<bestD){bestD=d;best=ci;}});
+      return best;
+    });
+    centers=centers.map((_,ci)=>{
+      const grp=pts.filter((_,i)=>labels[i]===ci);
+      if(!grp.length)return centers[ci];
+      return[grp.reduce((s,p)=>s+p[0],0)/grp.length,grp.reduce((s,p)=>s+p[1],0)/grp.length];
+    });
+  }
+  return labels;
+}
+const clusterLabels=kMeans(RAW);
+const DATA=RAW.map((r,i)=>[...r,clusterLabels[i]]);
+
+const CLUSTER_NAMES=['Budget Spenders','Standard','Careful','Target','Premium'];
+const CLUSTER_COLORS=['#ffc83d','#4d79ff','#00d68f','#ff4d6d','#b97fff'];
+const CLUSTER_BKGS=['rgba(255,200,61,0.08)','rgba(77,121,255,0.08)','rgba(0,214,143,0.08)','rgba(255,77,109,0.08)','rgba(185,127,255,0.08)'];
+
+// ── STATE ──
+let filtered=[...DATA];
+
+function avg(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;}
+
+// ── CHART.JS GLOBAL DEFAULTS ──
+Chart.defaults.color='#4e5468';
+Chart.defaults.font.family="'DM Mono', monospace";
+Chart.defaults.font.size=10;
+Chart.defaults.borderColor='rgba(255,255,255,0.05)';
+Chart.defaults.plugins.legend.display=false;
+
+// ── FILTER LOGIC ──
+function applyFilters(){
+  const gender=document.getElementById('f-gender').value;
+  const ageG=document.getElementById('f-age').value;
+  const incMin=+document.getElementById('f-inc-min').value;
+  const incMax=+document.getElementById('f-inc-max').value;
+  const spMin=+document.getElementById('f-sp-min').value;
+  const spMax=+document.getElementById('f-sp-max').value;
+  const cluster=document.getElementById('f-cluster').value;
+  filtered=DATA.filter(r=>{
+    if(gender!=='all'&&r[1]!==gender)return false;
+    if(ageG!=='all'){
+      const a=r[2];
+      if(ageG==='18-25'&&(a<18||a>25))return false;
+      if(ageG==='26-35'&&(a<26||a>35))return false;
+      if(ageG==='36-50'&&(a<36||a>50))return false;
+      if(ageG==='51+'&&a<51)return false;
+    }
+    if(r[3]<incMin||r[3]>incMax)return false;
+    if(r[4]<spMin||r[4]>spMax)return false;
+    if(cluster!=='all'&&r[5]!==+cluster)return false;
+    return true;
+  });
+  document.getElementById('filter-status').textContent=`Showing ${filtered.length} of 200 customers`;
+  renderAll();
+}
+
+['f-gender','f-age','f-cluster'].forEach(id=>document.getElementById(id).addEventListener('change',applyFilters));
+[['f-inc-min','lbl-inc-min'],['f-inc-max','lbl-inc-max'],['f-sp-min','lbl-sp-min'],['f-sp-max','lbl-sp-max']].forEach(([id,lbl])=>{
+  const el=document.getElementById(id);
+  const lo=document.getElementById(lbl);
+  el.addEventListener('input',()=>{lo.textContent=el.value;applyFilters();});
+});
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  ['f-gender','f-age','f-cluster'].forEach(id=>document.getElementById(id).value='all');
+  document.getElementById('f-inc-min').value=15;document.getElementById('lbl-inc-min').textContent=15;
+  document.getElementById('f-inc-max').value=137;document.getElementById('lbl-inc-max').textContent=137;
+  document.getElementById('f-sp-min').value=1;document.getElementById('lbl-sp-min').textContent=1;
+  document.getElementById('f-sp-max').value=100;document.getElementById('lbl-sp-max').textContent=100;
+  applyFilters();
+});
+
+// ── CHART REGISTRY ──
+const charts={};
+function destroyChart(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+
+// ── GENDER RINGS (SVG) ──
+function renderGenderRings(){
+  const f=filtered.filter(r=>r[1]==='Female').length;
+  const m=filtered.filter(r=>r[1]==='Male').length;
+  const total=f+m||1;
+  function ring(svgId,count,total,color){
+    const svg=document.getElementById(svgId);
+    svg.innerHTML='';
+    const pct=count/total;
+    const r=24,cx=30,cy=30;
+    const circ=2*Math.PI*r;
+    const ns='http://www.w3.org/2000/svg';
+    // track
+    const bg=document.createElementNS(ns,'circle');
+    bg.setAttribute('cx',cx);bg.setAttribute('cy',cy);bg.setAttribute('r',r);
+    bg.setAttribute('fill','none');bg.setAttribute('stroke','rgba(255,255,255,0.05)');bg.setAttribute('stroke-width','5');
+    svg.appendChild(bg);
+    // fill
+    const arc=document.createElementNS(ns,'circle');
+    arc.setAttribute('cx',cx);arc.setAttribute('cy',cy);arc.setAttribute('r',r);
+    arc.setAttribute('fill','none');arc.setAttribute('stroke',color);arc.setAttribute('stroke-width','5');
+    arc.setAttribute('stroke-linecap','round');
+    arc.setAttribute('stroke-dasharray',`${circ*pct} ${circ}`);
+    arc.setAttribute('transform',`rotate(-90 ${cx} ${cy})`);
+    arc.style.transition='stroke-dasharray .6s ease';
+    svg.appendChild(arc);
+    // center text
+    const txt=document.createElementNS(ns,'text');
+    txt.setAttribute('x',cx);txt.setAttribute('y',cy+1);txt.setAttribute('text-anchor','middle');
+    txt.setAttribute('dominant-baseline','middle');txt.setAttribute('fill',color);
+    txt.setAttribute('font-size','10');txt.setAttribute('font-family',"'Syne',sans-serif");
+    txt.setAttribute('font-weight','700');
+    txt.textContent=Math.round(pct*100)+'%';
+    svg.appendChild(txt);
+  }
+  ring('gender-ring-f',f,total,'#ff4d8d');
+  ring('gender-ring-m',m,total,'#4d79ff');
+}
+
+// ── KPIs ──
+function renderKPIs(){
+  const n=filtered.length;
+  const ages=filtered.map(r=>r[2]),incomes=filtered.map(r=>r[3]),spends=filtered.map(r=>r[4]);
+  const f=filtered.filter(r=>r[1]==='Female').length;
+  const m=filtered.filter(r=>r[1]==='Male').length;
+  document.getElementById('kpi-total').textContent=n||'—';
+  document.getElementById('kpi-age').textContent=n?avg(ages).toFixed(1):'—';
+  document.getElementById('kpi-income').textContent=n?avg(incomes).toFixed(1)+'k':'—';
+  document.getElementById('kpi-spend').textContent=n?avg(spends).toFixed(1):'—';
+  document.getElementById('dist-female').textContent=f;
+  document.getElementById('dist-male').textContent=m;
+  const total=n||1;
+  const fp=(f/total*100).toFixed(1),mp=(m/total*100).toFixed(1);
+  document.getElementById('dist-female-bar').style.width=fp+'%';
+  document.getElementById('dist-male-bar').style.width=mp+'%';
+  document.getElementById('dist-female-pct').textContent=fp+'% of selection';
+  document.getElementById('dist-male-pct').textContent=mp+'% of selection';
+  renderGenderRings();
+}
+
+// ── PIE (donut) ──
+function renderPie(){
+  destroyChart('pie');
+  const f=filtered.filter(r=>r[1]==='Female').length;
+  const m=filtered.filter(r=>r[1]==='Male').length;
+  const t=f+m||1;
+  document.getElementById('legend-pie').innerHTML=`
+    <span class="legend-item"><span class="legend-dot" style="background:#ff4d8d"></span>Female ${(f/t*100).toFixed(1)}%</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#4d79ff"></span>Male ${(m/t*100).toFixed(1)}%</span>`;
+  charts.pie=new Chart(document.getElementById('chart-pie'),{
+    type:'doughnut',
+    data:{labels:['Female','Male'],datasets:[{data:[f,m],backgroundColor:['#ff4d8d','#4d79ff'],borderColor:['#1a1e2a','#1a1e2a'],borderWidth:3,hoverOffset:8}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.raw} (${(ctx.raw/t*100).toFixed(1)}%)`}},
+        legend:{display:false}}
+    }
+  });
+}
+
+// ── AGE HISTOGRAM ──
+function renderAgeHist(){
+  destroyChart('agehist');
+  const bins=[18,25,30,35,40,45,50,55,60,65,70,75];
+  const labels=bins.slice(0,-1).map((b,i)=>`${b}-${bins[i+1]}`);
+  const counts=labels.map((_,i)=>filtered.filter(r=>r[2]>=bins[i]&&r[2]<bins[i+1]).length);
+  charts.agehist=new Chart(document.getElementById('chart-age-hist'),{
+    type:'bar',
+    data:{labels,datasets:[{data:counts,backgroundColor:counts.map((_,i)=>`hsla(${200+i*12},80%,65%,0.75)`),borderRadius:5,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>`${ctx.parsed.y} customers`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:9},maxRotation:45,color:'#4e5468'}},
+        y:{grid:{color:'rgba(255,255,255,0.04)'},ticks:{stepSize:4,color:'#4e5468'}}
+      }
+    }
+  });
+}
+
+// ── SPENDING LINE ──
+function renderSpendLine(){
+  destroyChart('spendline');
+  const bins=[[18,25],[26,35],[36,45],[46,55],[56,70]];
+  const labels=bins.map(b=>`${b[0]}–${b[1]}`);
+  const vals=bins.map(b=>{
+    const g=filtered.filter(r=>r[2]>=b[0]&&r[2]<=b[1]).map(r=>r[4]);
+    return g.length?+avg(g).toFixed(1):null;
+  });
+  charts.spendline=new Chart(document.getElementById('chart-spend-line'),{
+    type:'line',
+    data:{labels,datasets:[{data:vals,borderColor:'#b97fff',backgroundColor:'rgba(185,127,255,0.08)',tension:0.45,pointRadius:6,pointBackgroundColor:'#b97fff',pointBorderColor:'#13161f',pointBorderWidth:2,fill:true}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>`Avg score: ${ctx.parsed.y}`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{color:'#4e5468'}},
+        y:{min:0,max:100,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4e5468'}}
+      }
+    }
+  });
+}
+
+// ── SCATTER ──
+function renderScatter(){
+  destroyChart('scatter');
+  const fData=filtered.filter(r=>r[1]==='Female').map(r=>({x:r[3],y:r[4]}));
+  const mData=filtered.filter(r=>r[1]==='Male').map(r=>({x:r[3],y:r[4]}));
+  document.getElementById('legend-scatter').innerHTML=`
+    <span class="legend-item"><span class="legend-dot" style="background:#ff4d8d"></span>Female</span>
+    <span class="legend-item"><span class="legend-dot" style="background:#4d79ff"></span>Male</span>`;
+  charts.scatter=new Chart(document.getElementById('chart-scatter'),{
+    type:'scatter',
+    data:{datasets:[
+      {label:'Female',data:fData,backgroundColor:'rgba(255,77,141,0.6)',pointRadius:5,pointHoverRadius:8,pointBorderColor:'transparent'},
+      {label:'Male',data:mData,backgroundColor:'rgba(77,121,255,0.6)',pointRadius:5,pointHoverRadius:8,pointBorderColor:'transparent'}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>`Income: $${ctx.parsed.x}k · Score: ${ctx.parsed.y}`}}},
+      scales:{
+        x:{title:{display:true,text:'Annual Income (k$)',color:'#4e5468',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4e5468'}},
+        y:{title:{display:true,text:'Spending Score',color:'#4e5468',font:{size:10}},min:0,max:105,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4e5468'}}
+      }
+    }
+  });
+}
+
+// ── BAR ID ──
+function renderBarID(){
+  destroyChart('barid');
+  const sample=filtered.length>40?filtered.filter((_,i)=>i%Math.ceil(filtered.length/40)===0):filtered;
+  charts.barid=new Chart(document.getElementById('chart-bar-id'),{
+    type:'bar',
+    data:{
+      labels:sample.map(r=>`#${r[0]}`),
+      datasets:[{data:sample.map(r=>r[4]),backgroundColor:sample.map(r=>r[1]==='Female'?'rgba(255,77,141,0.65)':'rgba(77,121,255,0.65)'),borderRadius:4,borderSkipped:false}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>`Score: ${ctx.parsed.y}`}}},
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:8},maxRotation:90,color:'#4e5468'}},
+        y:{min:0,max:105,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4e5468'}}
+      }
+    }
+  });
+}
+
+// ── CLUSTER SCATTER ──
+function renderCluster(){
+  destroyChart('cluster');
+  document.getElementById('cluster-legend').innerHTML=CLUSTER_NAMES.map((n,i)=>
+    `<span class="cluster-badge" style="background:${CLUSTER_BKGS[i]};color:${CLUSTER_COLORS[i]};border:1px solid ${CLUSTER_COLORS[i]}44">● ${n}</span>`
+  ).join('');
+  charts.cluster=new Chart(document.getElementById('chart-cluster'),{
+    type:'scatter',
+    data:{datasets:CLUSTER_NAMES.map((name,ci)=>({
+      label:name,
+      data:filtered.filter(r=>r[5]===ci).map(r=>({x:r[3],y:r[4]})),
+      backgroundColor:CLUSTER_COLORS[ci]+'99',
+      pointRadius:5.5,pointHoverRadius:9,pointBorderColor:'transparent'
+    }))},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{tooltip:{callbacks:{label:ctx=>`Income: $${ctx.parsed.x}k · Score: ${ctx.parsed.y}`}}},
+      scales:{
+        x:{title:{display:true,text:'Annual Income (k$)',color:'#4e5468',font:{size:10}},grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4e5468'}},
+        y:{title:{display:true,text:'Spending Score',color:'#4e5468',font:{size:10}},min:0,max:105,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#4e5468'}}
+      }
+    }
+  });
+}
+
+// ── RADAR ──
+function renderRadar(){
+  destroyChart('radar');
+  const norm=(v,mn,mx)=>Math.round((v-mn)/(mx-mn)*100);
+  const profiles=CLUSTER_NAMES.map((_,ci)=>{
+    const g=filtered.filter(r=>r[5]===ci);
+    if(!g.length)return[0,0,0];
+    return[norm(avg(g.map(r=>r[2])),18,70),norm(avg(g.map(r=>r[3])),15,137),norm(avg(g.map(r=>r[4])),1,100)];
+  });
+  charts.radar=new Chart(document.getElementById('chart-radar'),{
+    type:'radar',
+    data:{
+      labels:['Age','Income','Spending'],
+      datasets:CLUSTER_NAMES.map((name,i)=>({
+        label:name,data:profiles[i],
+        borderColor:CLUSTER_COLORS[i],backgroundColor:CLUSTER_COLORS[i]+'1a',
+        pointBackgroundColor:CLUSTER_COLORS[i],pointBorderColor:CLUSTER_COLORS[i],borderWidth:2,pointRadius:4
+      }))
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false}},
+      scales:{r:{
+        min:0,max:100,
+        ticks:{font:{size:8},color:'#4e5468',backdropColor:'transparent',stepSize:25},
+        grid:{color:'rgba(255,255,255,0.06)'},
+        angleLines:{color:'rgba(255,255,255,0.06)'},
+        pointLabels:{font:{size:11,family:"'Syne',sans-serif"},color:'#8a90a8'}
+      }}
+    }
+  });
+}
+
+// ── D3 HELPERS ──
+const D3_STYLE = {
+  axis: sel => sel.call(a=>{a.select('.domain').remove();a.selectAll('.tick line').remove();a.selectAll('text').style('font-size','10px').style('fill','#4e5468').style('font-family',"'DM Mono',monospace");}),
+  grid: (g,scale,width,ticks=4) => {
+    g.selectAll('.grid-line').data(scale.ticks(ticks)).enter().append('line')
+     .attr('class','grid-line').attr('x1',0).attr('x2',width)
+     .attr('y1',d=>scale(d)).attr('y2',d=>scale(d))
+     .attr('stroke','rgba(255,255,255,0.04)').attr('stroke-width',1);
+  }
+};
+
+// ── KDE ──
+function renderKDE(){
+  const el=document.getElementById('kde-chart');el.innerHTML='';
+  if(!filtered.length){el.innerHTML='<div class="no-data">No data</div>';return;}
+  const w=el.clientWidth||500,h=250,m={top:24,right:20,bottom:36,left:40};
+  const W=w-m.left-m.right,H=h-m.top-m.bottom;
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${w} ${h}`);
+  const g=svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  function kde(kernel,thresholds,data){return thresholds.map(x=>[x,d3.mean(data,v=>kernel(x-v))]);}
+  function epan(bw){return x=>Math.abs(x/=bw)<1?0.75*(1-x*x)/bw:0;}
+
+  const ages=filtered.map(r=>r[2]);
+  const incomes=filtered.map(r=>r[3]);
+  const x=d3.scaleLinear().domain([10,80]).range([0,W]);
+  const xi=d3.scaleLinear().domain([0,150]).range([0,W]);
+  const kdeA=kde(epan(7),d3.range(10,80,1),ages);
+  const kdeI=kde(epan(15),d3.range(0,150,2),incomes);
+  const yMax=Math.max(d3.max(kdeA,d=>d[1]),d3.max(kdeI,d=>d[1]));
+  const y=d3.scaleLinear().domain([0,yMax*1.2]).range([H,0]);
+
+  D3_STYLE.grid(g,y,W,4);
+  g.append('g').attr('transform',`translate(0,${H})`).call(d3.axisBottom(x).ticks(6)).call(D3_STYLE.axis);
+  g.append('g').call(d3.axisLeft(y).ticks(4)).call(D3_STYLE.axis);
+
+  const areaA=d3.area().x(d=>x(d[0])).y0(H).y1(d=>y(d[1])).curve(d3.curveBasis);
+  const areaI=d3.area().x(d=>xi(d[0])).y0(H).y1(d=>y(d[1])).curve(d3.curveBasis);
+
+  g.append('path').datum(kdeA).attr('fill','rgba(77,121,255,0.12)').attr('stroke','#4d79ff').attr('stroke-width',2).attr('d',areaA);
+  g.append('path').datum(kdeI).attr('fill','rgba(0,214,143,0.10)').attr('stroke','#00d68f').attr('stroke-width',2).attr('d',areaI);
+
+  [['Age','#4d79ff',20],['Income','#00d68f',90]].forEach(([l,c,lx])=>{
+    g.append('rect').attr('x',lx).attr('y',-16).attr('width',8).attr('height',8).attr('fill',c).attr('rx',2);
+    g.append('text').attr('x',lx+12).attr('y',-8).text(l).style('font-size','10px').style('fill','#8a90a8').style('font-family',"'DM Mono',monospace");
+  });
+  g.append('text').attr('x',W/2).attr('y',H+28).attr('text-anchor','middle').style('font-size','10px').style('fill','#4e5468').text('Value');
+}
+
+// ── HEATMAP ──
+function renderHeatmap(){
+  const el=document.getElementById('heatmap-chart');el.innerHTML='';
+  if(!filtered.length){el.innerHTML='<div class="no-data">No data</div>';return;}
+  const vars=['Age','Income','Spending'];
+  const getData=r=>[r[2],r[3],r[4]];
+  const data=filtered.map(getData);
+  function corr(a,b){const ma=avg(a),mb=avg(b);const num=a.reduce((s,v,i)=>s+(v-ma)*(b[i]-mb),0);const da=Math.sqrt(a.reduce((s,v)=>s+(v-ma)**2,0));const db=Math.sqrt(b.reduce((s,v)=>s+(v-mb)**2,0));return da&&db?num/(da*db):0;}
+  const matrix=vars.map((_,i)=>vars.map((_,j)=>corr(data.map(r=>r[i]),data.map(r=>r[j]))));
+
+  const w=el.clientWidth||500,h=250,m={top:40,right:24,bottom:16,left:72};
+  const W=w-m.left-m.right,H=h-m.top-m.bottom;
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${w} ${h}`);
+  const g=svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+  const cell=Math.min(W/3,H/3)-3;
+  const cW=W/3,cH=H/3;
+  const colorScale=d3.scaleLinear().domain([-1,0,1]).range(['#ff4d6d','#1a1e2a','#4d79ff']);
+
+  vars.forEach((rv,ri)=>vars.forEach((cv,ci)=>{
+    const val=matrix[ri][ci];
+    const fill=colorScale(val);
+    const cellG=g.append('g').attr('transform',`translate(${ci*cW},${ri*cH})`);
+    cellG.append('rect').attr('width',cW-4).attr('height',cH-4).attr('rx',8).attr('fill',fill).attr('stroke','rgba(255,255,255,0.04)').attr('stroke-width',1);
+    cellG.append('text').attr('x',(cW-4)/2).attr('y',(cH-4)/2+1).attr('text-anchor','middle').attr('dominant-baseline','middle')
+      .style('font-size','13px').style('font-weight','600').style('fill',Math.abs(val)>0.3?'rgba(255,255,255,0.9)':'rgba(255,255,255,0.4)')
+      .style('font-family',"'Syne',sans-serif").text(val.toFixed(2));
+  }));
+
+  vars.forEach((v,i)=>{
+    g.append('text').attr('x',-8).attr('y',i*cH+cH/2-2).attr('text-anchor','end').attr('dominant-baseline','middle')
+      .style('font-size','10px').style('fill','#8a90a8').style('font-family',"'DM Mono',monospace").text(v);
+    g.append('text').attr('x',i*cW+cW/2-2).attr('y',-14).attr('text-anchor','middle')
+      .style('font-size','10px').style('fill','#8a90a8').style('font-family',"'DM Mono',monospace").text(v);
+  });
+}
+
+// ── BOX PLOT ──
+function renderBoxPlot(){
+  const el=document.getElementById('box-chart');el.innerHTML='';
+  if(!filtered.length){el.innerHTML='<div class="no-data">No data</div>';return;}
+  const w=el.clientWidth||500,h=270,m={top:16,right:16,bottom:44,left:44};
+  const W=w-m.left-m.right,H=h-m.top-m.bottom;
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${w} ${h}`);
+  const g=svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const clusterData=CLUSTER_NAMES.map((name,ci)=>{
+    const grp=filtered.filter(r=>r[5]===ci).map(r=>r[4]).sort(d3.ascending);
+    if(!grp.length)return null;
+    const q1=d3.quantile(grp,.25),q2=d3.quantile(grp,.5),q3=d3.quantile(grp,.75);
+    const iqr=q3-q1;
+    const min=Math.max(d3.min(grp),q1-1.5*iqr),max=Math.min(d3.max(grp),q3+1.5*iqr);
+    return{name,q1,q2,q3,min,max,outliers:grp.filter(v=>v<min||v>max),color:CLUSTER_COLORS[ci]};
+  }).filter(Boolean);
+
+  const x=d3.scaleBand().domain(clusterData.map(d=>d.name)).range([0,W]).padding(.35);
+  const y=d3.scaleLinear().domain([0,105]).range([H,0]);
+
+  D3_STYLE.grid(g,y,W,5);
+  g.append('g').attr('transform',`translate(0,${H})`).call(d3.axisBottom(x).tickSize(0)).call(D3_STYLE.axis)
+    .selectAll('text').style('font-size','9px');
+  g.append('g').call(d3.axisLeft(y).ticks(5)).call(D3_STYLE.axis);
+
+  clusterData.forEach(d=>{
+    const cx=x(d.name)+x.bandwidth()/2,bw=x.bandwidth();
+    // whisker
+    g.append('line').attr('x1',cx).attr('x2',cx).attr('y1',y(d.min)).attr('y2',y(d.max))
+      .attr('stroke',d.color).attr('stroke-width',1.5).attr('stroke-dasharray','3,2').attr('opacity',0.5);
+    // box
+    const boxG=g.append('g');
+    boxG.append('rect').attr('x',x(d.name)).attr('y',y(d.q3)).attr('width',bw).attr('height',y(d.q1)-y(d.q3))
+      .attr('fill',d.color+'22').attr('stroke',d.color).attr('stroke-width',1.5).attr('rx',4);
+    // median
+    boxG.append('line').attr('x1',x(d.name)).attr('x2',x(d.name)+bw).attr('y1',y(d.q2)).attr('y2',y(d.q2))
+      .attr('stroke',d.color).attr('stroke-width',2.5);
+    // outliers
+    d.outliers.forEach(v=>g.append('circle').attr('cx',cx+(Math.random()-.5)*bw*.5).attr('cy',y(v)).attr('r',3)
+      .attr('fill','none').attr('stroke',d.color).attr('stroke-width',1.5).attr('opacity',0.7));
+  });
+
+  g.append('text').attr('x',-H/2).attr('y',-32).attr('transform','rotate(-90)').attr('text-anchor','middle')
+    .style('font-size','10px').style('fill','#4e5468').text('Spending Score');
+}
+
+// ── VIOLIN ──
+function renderViolin(){
+  const el=document.getElementById('violin-chart');el.innerHTML='';
+  if(!filtered.length){el.innerHTML='<div class="no-data">No data</div>';return;}
+  const w=el.clientWidth||500,h=270,m={top:16,right:16,bottom:40,left:44};
+  const W=w-m.left-m.right,H=h-m.top-m.bottom;
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${w} ${h}`);
+  const g=svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+  const groups=[['Female','#ff4d8d'],['Male','#4d79ff']];
+  const x=d3.scaleBand().domain(groups.map(g=>g[0])).range([0,W]).padding(.2);
+  const y=d3.scaleLinear().domain([0,100]).range([H,0]);
+
+  D3_STYLE.grid(g,y,W,5);
+  g.append('g').attr('transform',`translate(0,${H})`).call(d3.axisBottom(x).tickSize(0)).call(D3_STYLE.axis);
+  g.append('g').call(d3.axisLeft(y).ticks(5)).call(D3_STYLE.axis);
+
+  function kde2(kernel,thresh,data){return thresh.map(x=>[x,d3.mean(data,v=>kernel(x-v))]);}
+  function ep(bw){return x=>Math.abs(x/=bw)<1?0.75*(1-x*x)/bw:0;}
+
+  groups.forEach(([gender,color])=>{
+    const vals=filtered.filter(r=>r[1]===gender).map(r=>r[4]);
+    if(!vals.length)return;
+    const kd=kde2(ep(8),d3.range(0,101,1.5),vals);
+    const maxD=d3.max(kd,d=>d[1]);
+    const bw=x.bandwidth();
+    const xScale=d3.scaleLinear().domain([0,maxD]).range([0,bw/2]);
+    const xc=x(gender)+bw/2;
+    const right=kd.map(d=>[xc+xScale(d[1]),y(d[0])]);
+    const left=kd.slice().reverse().map(d=>[xc-xScale(d[1]),y(d[0])]);
+    const pts=[...right,...left].map(p=>p.join(',')).join(' ');
+
+    // gradient fill
+    const gradId=`vgrad-${gender.toLowerCase()}`;
+    const defs=svg.append('defs');
+    const grad=defs.append('linearGradient').attr('id',gradId).attr('gradientUnits','userSpaceOnUse')
+      .attr('x1',0).attr('y1',H).attr('x2',0).attr('y2',0);
+    grad.append('stop').attr('offset','0%').attr('stop-color',color).attr('stop-opacity',0.05);
+    grad.append('stop').attr('offset','100%').attr('stop-color',color).attr('stop-opacity',0.3);
+
+    g.append('polygon').attr('points',pts).attr('fill',`url(#${gradId})`).attr('stroke',color).attr('stroke-width',1.5);
+    const med=d3.median(vals);
+    g.append('circle').attr('cx',xc).attr('cy',y(med)).attr('r',5)
+      .attr('fill',color).attr('stroke','#0e1118').attr('stroke-width',2);
+  });
+  g.append('text').attr('x',-H/2).attr('y',-32).attr('transform','rotate(-90)').attr('text-anchor','middle')
+    .style('font-size','10px').style('fill','#4e5468').text('Spending Score');
+}
+
+// ── PARALLEL ──
+function renderParallel(){
+  const el=document.getElementById('parallel-chart');el.innerHTML='';
+  if(!filtered.length){el.innerHTML='<div class="no-data">No data</div>';return;}
+  const w=el.clientWidth||500,h=290,m={top:36,right:32,bottom:16,left:32};
+  const W=w-m.left-m.right,H=h-m.top-m.bottom;
+  const svg=d3.select(el).append('svg').attr('viewBox',`0 0 ${w} ${h}`);
+  const g=svg.append('g').attr('transform',`translate(${m.left},${m.top})`);
+
+  const axes=['Age','Income','Spending'];
+  const accessors=[r=>r[2],r=>r[3],r=>r[4]];
+  const extents=accessors.map(fn=>d3.extent(filtered,fn));
+  const scales=extents.map(ext=>d3.scaleLinear().domain(ext).range([H,0]));
+  const xScale=d3.scalePoint().domain(axes).range([0,W]);
+  const sample=filtered.length>70?filtered.filter((_,i)=>i%Math.ceil(filtered.length/70)===0):filtered;
+
+  // Lines
+  sample.forEach(r=>{
+    const pts=axes.map((_,i)=>`${xScale(axes[i])},${scales[i](accessors[i](r))}`).join(' ');
+    const c=r[1]==='Female'?'#ff4d8d':'#4d79ff';
+    g.append('polyline').attr('points',pts).attr('fill','none').attr('stroke',c).attr('stroke-width',0.9).attr('opacity',0.28);
+  });
+
+  // Axes
+  axes.forEach((axis,i)=>{
+    const ax=xScale(axis);
+    g.append('line').attr('x1',ax).attr('x2',ax).attr('y1',0).attr('y2',H).attr('stroke','rgba(255,255,255,0.12)').attr('stroke-width',2);
+    g.append('text').attr('x',ax).attr('y',-18).attr('text-anchor','middle')
+      .style('font-size','11px').style('font-weight','700').style('fill','#8a90a8').style('font-family',"'Syne',sans-serif").text(axis);
+    g.append('g').attr('transform',`translate(${ax},0)`).call(d3.axisLeft(scales[i]).ticks(4).tickSize(4))
+      .call(D3_STYLE.axis);
+  });
+
+  [['Female','#ff4d8d'],['Male','#4d79ff']].forEach(([l,c],i)=>{
+    g.append('rect').attr('x',W-100+i*60).attr('y',-30).attr('width',8).attr('height',8).attr('fill',c).attr('rx',2);
+    g.append('text').attr('x',W-89+i*60).attr('y',-22).style('font-size','9px').style('fill','#8a90a8')
+      .style('font-family',"'DM Mono',monospace").text(l);
+  });
+}
+
+// ── RENDER ALL ──
+function renderAll(){
+  renderKPIs();
+  renderPie();
+  renderAgeHist();
+  renderSpendLine();
+  renderScatter();
+  renderBarID();
+  renderCluster();
+  renderRadar();
+  renderKDE();
+  renderHeatmap();
+  renderBoxPlot();
+  renderViolin();
+  renderParallel();
+}
+
+renderAll();
+
+// Resize observer for D3 charts
+const ro=new ResizeObserver(()=>{
+  renderKDE();renderHeatmap();renderBoxPlot();renderViolin();renderParallel();
+});
+document.querySelectorAll('.d3-chart').forEach(el=>ro.observe(el));
+</script>
+</body>
+</html>
