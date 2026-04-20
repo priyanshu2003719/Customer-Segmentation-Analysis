@@ -267,3 +267,33 @@ This visualization is the "Grand Reveal." It proves that your customers aren't j
     * *Calculate the average age of customers in Cluster 0.*
 
 **In short:** This code assigns a permanent "label" or "tag" to every customer based on their behavior, allowing you to stop treating them as one large group and start treating them as five distinct target markets.
+
+**2)This creates a **side-by-side comparison** to validate and profile the five customer segments created by the AI. It moves from looking at individual data points to looking at the **average characteristics** of each group.**
+
+### **Why Used**
+* **Validation:** It checks if the clusters actually "make sense." If two clusters had the exact same average income and spending, the segmentation would be redundant.
+* **Persona Profiling:** By calculating the **mean (average)** income and spending score for each cluster, the code allows the business to put a "face" or a "title" to each group (e.g., "The High Earners" or "The Impulse Buyers").
+* **Strategic Comparison:** Using a `1x2` subplot layout allows decision-makers to see the relationship between earning and spending simultaneously, rather than flipping between two different charts.
+* **Data Precision:** The `bar_label` with `fmt='%.1f'` provides the exact average values, ensuring the business knows the precise financial power of each segment.
+
+---
+
+### **Analysis of the Output**
+The charts show the distinct "Financial DNA" of your five clusters (C0 through C4):
+
+**1. Average Income by Cluster (Left Chart)**
+* **The Wealthy:** Clusters **C1 (86.5k)** and **C3 (88.2k)** are your highest earners.
+* **The Middle Class:** Cluster **C0 (55.3k)** represents your mid-tier earners.
+* **The Budget Tier:** Clusters **C2 (25.7k)** and **C4 (26.3k)** represent your lower-income segments.
+
+
+**2. Average Spending Score by Cluster (Right Chart)**
+* **The Big Spenders:** Clusters **C1 (82.1)** and **C2 (79.4)** are the most active shoppers. Interestingly, **C2** spends heavily despite having the lowest average income.
+* **The Moderate Spenders:** Cluster **C0 (49.5)** sits right in the middle.
+* **The Conservative Spenders:** Clusters **C3 (17.1)** and **C4 (20.9)** spend the least. Note that **C3** has a very high income but chooses not to spend, marking them as a "missed opportunity" for marketing.
+
+### **The Short**
+This visualization proves that **Income does not always equal Spending.** It highlights that your most profitable customers are in **C1** (High Income/High Spending), while **C2** (Low Income/High Spending) represents a surprisingly loyal, albeit less wealthy, fan base.
+
+<img width="1389" height="590" alt="image" src="https://github.com/user-attachments/assets/8fa53ebe-aa8f-4b6e-9f4b-79c1bf282b91" />
+
