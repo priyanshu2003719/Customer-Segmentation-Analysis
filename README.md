@@ -250,4 +250,20 @@ This visualization is the "Grand Reveal." It proves that your customers aren't j
 
 <img width="1183" height="790" alt="image" src="https://github.com/user-attachments/assets/608c559c-1a1d-4793-bb31-e35b38abd871" />
 
+### STEP 5 : ADDING CLUSTERS ASSIGNMENTS TO DATAFRAME
 
+**1)This is the **"Final Save"** step of  analysis. It bridges the gap between the AI's math and  actual business spreadsheet.**
+
+### **What it means**
+* **`customer_data`**: This is your original DataFrame (table) containing all your customer info (Age, Gender, Income, etc.).
+* **`['cluster']`**: You are creating a **brand new column** in that table named "cluster."
+* **`= y`**: You are filling that new column with the results stored in the variable `y` (the group numbers $0, 1, 2, 3, 4$ that the KMeans algorithm just calculated).
+
+### **Why this code is used**
+* **Identification:** Before this line, the "clusters" only existed as a separate list of numbers in the computer's memory. This line attaches those numbers to the specific customers they belong to.
+* **Data Organization:** It allows you to see exactly which category a specific person falls into. For example, you can now see that "Customer #45" is in Cluster 2.
+* **Future Filtering:** Once this column is added, you can easily filter your data to perform targeted actions, such as:
+    * *Show me only the email addresses of customers in Cluster 3.*
+    * *Calculate the average age of customers in Cluster 0.*
+
+**In short:** This code assigns a permanent "label" or "tag" to every customer based on their behavior, allowing you to stop treating them as one large group and start treating them as five distinct target markets.
