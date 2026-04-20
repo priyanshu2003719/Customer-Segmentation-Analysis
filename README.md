@@ -77,8 +77,6 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 
 ## **2.Age Distribution Histogram**
 
----
-
 **The Matplotlib library to perform exploratory data analysis, specifically focusing on the demographic makeup of a customer base. Here is a brief explanation of why this approach was used and what the resulting image reveals:**
 
 ### Why Used
@@ -86,8 +84,6 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 * **Visual Clarity:** The use of a specific purple color (`#9b59b6`) and black edges ensures the bars are visually distinct. Setting a large figure size (10x8) prevents the data from looking cramped.
 * **Precision Labeling:** The `bar_label` function is the most important part of this code. It takes the guesswork out of reading the graph by placing the exact "frequency" (the number of people) directly above each bar.
 * **Contextualization:** Adding titles and axis labels ensures that anyone looking at the chart immediately understands they are looking at **how many customers (Frequency)** fall into specific **age groups (Age)**.
-
----
 
 ### What the Output Shows 
 The histogram reveals a **multi-modal distribution**, meaning there are several distinct "peaks" of customer activity across different life stages:
@@ -98,8 +94,7 @@ The histogram reveals a **multi-modal distribution**, meaning there are several 
 * **The Mid-Life Dip:** There is a noticeable drop in frequency during the early 40s (only **5 people**) and a major "valley" in the mid-50s, where only **2 people** are recorded.
 * **Retirement Consistency:** Engagement levels out toward the end of the spectrum, with a consistent group of **8 people** appearing in the 65–68 age range.
 
-
 **In short:** The visualization proves that your business is most successful with people in their **early 30s**, but it also maintains a very strong secondary market among those in their **late 40s**.
 
-  <img width="841" height="702" alt="image" src="https://github.com/user-attachments/assets/66932cbb-17ae-481c-8844-854fd29837a4" />
+<img width="841" height="702" alt="image" src="https://github.com/user-attachments/assets/66932cbb-17ae-481c-8844-854fd29837a4" />
 
