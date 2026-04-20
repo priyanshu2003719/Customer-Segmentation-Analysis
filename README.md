@@ -58,7 +58,10 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 | **G) `customer_data['Gender'].value_counts()`** | Counts the frequency of unique values in the 'Gender' column. |
 
 ### STEP 4: VISUALIZATION
-**1) counts the number of occurrences of each gender in dataset and creates a **vertical bar chart** to represent those counts.** **It is used for **exploratory data analysis (EDA)** to check for "class imbalance." Understanding the gender split helps determine if your customer segments will be skewed toward one group or if the mall attracts a balanced audience.**
+
+## **1.Gender Distribution Bar Chart**
+
+**counts the number of occurrences of each gender in dataset and creates a **vertical bar chart** to represent those counts.** **It is used for **exploratory data analysis (EDA)** to check for "class imbalance." Understanding the gender split helps determine if your customer segments will be skewed toward one group or if the mall attracts a balanced audience.**
 
 ### **Understanding the Output (The Plot)**
 * **The X-Axis:** Displays the categories being compared (**Female** and **Male**).
@@ -70,3 +73,21 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 
 
   <img width="540" height="471" alt="image" src="https://github.com/user-attachments/assets/d2016dc9-0151-4dce-8f7e-f59e7d490a40" />
+
+
+## **2.Age Distribution Histogram**
+
+**creates a **histogram** with 20 bins to visualize how customers are distributed across different age groups. It is used to identify the **target demographic**. Instead of just looking at the average age, a histogram shows you exactly which age brackets are the most common (peaks) and which are rare (valleys), helping you tailor marketing strategies to the right age groups.**
+
+### **Understanding the Output (The Plot)**
+
+* **The X-Axis (Age):** Represents the range of ages, from **18 to 70**.
+* **The Y-Axis (Frequency):** Represents how many customers fall into each specific age bucket.
+* **The Peaks:** You will notice a high concentration of customers in their **late 20s to late 30s**. This is your "core" customer base.
+* **The Distribution:**
+    * There is a significant spike around the **30–35 age range**, indicating a young adult focus.
+    * The frequency gradually tapers off as age increases, showing fewer customers over the age of **60**.
+* **`ax.bar_label`:** Just like in the previous chart, this adds the exact count on top of every bar, so you can see exactly how many people are in each specific 2–3 year age interval.
+
+  <img width="841" height="702" alt="image" src="https://github.com/user-attachments/assets/66932cbb-17ae-481c-8844-854fd29837a4" />
+
