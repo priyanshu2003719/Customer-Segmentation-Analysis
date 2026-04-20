@@ -400,7 +400,7 @@ This project is a masterclass in **Customer Intelligence**. You have taken raw d
 
 
 ### **Q1) Perform Clustering (The Engine)**
-You used **Python's scikit-learn** to implement **K-Means Clustering**, a machine learning algorithm that finds hidden patterns in data.
+Used **Python's scikit-learn** to implement **K-Means Clustering**, a machine learning algorithm that finds hidden patterns in data.
 * **The Optimization:** You didn't pick a number at random; you used the **Elbow Method** to find the "mathematical sweet spot" where the data groups most naturally.
 * **The Logic:** The algorithm calculated the distance between data points to ensure that customers within a group are as similar as possible, while each group is as different as possible from the others.
 
@@ -412,7 +412,7 @@ By isolating **Annual Income** and **Spending Score**, you identified the relati
 
 
 ### **Q3) Visualize Segments (The Communication)**
-You transformed complex multidimensional math into clear, actionable visuals:
+Transformed complex multidimensional math into clear, actionable visuals:
 * **Scatter Plots:** Visualized the "physical" boundaries of each customer segment.
 * **Comparison Bar Charts:** Showed the average "Financial DNA" of each cluster side-by-side.
 * **Distribution Bar Charts:** Ranked the customer base to show exactly where the majority of your "Spending Power" sits (the 67-100 score range).
