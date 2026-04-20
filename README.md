@@ -130,3 +130,24 @@ The resulting pie chart provides a clear breakdown of the purchasing power withi
 
 <img width="636" height="659" alt="image" src="https://github.com/user-attachments/assets/16a50418-6df8-47fb-a963-761cbdc73454" />
 
+## **4. Spending Score Distribution Horizontal Bar Chart**
+
+**This performs a behavioral analysis of a customer base by visualizing "Spending Scores"—a metric typically used in retail to measure how much a customer spends relative to others.**
+
+### Why Used
+* **Ranking & Prioritization:** A **horizontal bar chart** (`barh`) is used here because it is the most effective way to display a list from highest to lowest. It allows the viewer to instantly see which spending behaviors are most dominant.
+* **Custom Binning:** Instead of plotting every individual score, the data is manually grouped into logical ranges (e.g., 0-4, 5-9). This turns granular, noisy data into **actionable segments**.
+* **Enhanced Readability:** The code uses a "clean UI" approach—removing the top and right borders (spines), using a soft background color (`#F8F9FA`), and adding white grid lines—to ensure the focus remains entirely on the data.
+* **Direct Value Mapping:** By using `bar_label` with extra padding, the exact customer counts are placed at the end of each bar, making the chart function as both a visual aid and a summary report.
+
+### What the Output Shows 
+The chart reveals a **high-value customer skew**, meaning the business is exceptionally good at attracting and retaining high spenders:
+* **The Power Segment (Top Tier):** The "67-100" range is your largest category by far, with **820 customers**. This indicates that a huge portion of your base consists of "Premium" or "Loyal" spenders.
+* **The Core Middle:** The "50-66" range follows strongly with **680 customers**. Together with the top tier, these two groups represent the vast majority of your business activity.
+* **The Plateau:** Between the "20-29" and "30-39" ranges, the number of customers is almost identical (**320 and 310 respectively**), showing a consistent "casual" shopper base.
+* **Low Engagement:** There is very little "bottom-tier" activity. Only **100 customers** have a spending score of 0-4. 
+* **Business Health:** This visualization shows an "Inverted Pyramid" distribution. Usually, businesses have many low-spenders and few high-spenders; your data shows the opposite, which suggests a **highly premium or luxury-leaning brand** where most customers are willing to spend significantly.
+
+**In Short:** The visualization proves you have a "High-Value" customer base where the majority of your audience consists of your most profitable spenders.
+
+<img width="985" height="590" alt="image" src="https://github.com/user-attachments/assets/363acf02-c9e0-4d46-a6bd-1eab8aa76691" />
