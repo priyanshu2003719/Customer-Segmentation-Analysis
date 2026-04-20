@@ -61,7 +61,7 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 
 ## **1. Gender Distribution Bar Chart**
 
- **The Matplotlib and **Pandas** libraries to create a categorical analysis of a customer database. By shifting from raw text data to a visual bar chart, it allows for an immediate understanding of the brand's gender demographics.**
+ **The Matplotlib and **Pandas** libraries is used to create a categorical analysis of a customer database. By shifting from raw text data to a visual bar chart, it allows for an immediate understanding of the brand's gender demographics.**
 
 ### Why  Used
 * **Categorical Comparison:** While a histogram (like your previous age chart) is for numbers, a **bar chart** is the best tool for comparing distinct categories like "Male" and "Female."
@@ -86,7 +86,7 @@ The resulting bar chart provides a clear snapshot of the customer base's gender 
 
 ## **2. Age Distribution Histogram**
 
-**The Matplotlib library to perform exploratory data analysis, specifically focusing on the demographic makeup of a customer base. Here is a brief explanation of why this approach was used and what the resulting image reveals:**
+**The Matplotlib library is used to perform exploratory data analysis, specifically focusing on the demographic makeup of a customer base. Here is a brief explanation of why this approach was used and what the resulting image reveals:**
 
 ### Why Used
 * **Data Summarization:** Instead of looking at a long list of individual ages, the code uses a **histogram** to group data into 20 "bins." This makes it easy to spot trends and patterns at a glance.
@@ -106,4 +106,27 @@ The histogram reveals a **multi-modal distribution**, meaning there are several 
 **In short:** The visualization proves that your business is most successful with people in their **early 30s**, but it also maintains a very strong secondary market among those in their **late 40s**.
 
 <img width="841" height="702" alt="image" src="https://github.com/user-attachments/assets/66932cbb-17ae-481c-8844-854fd29837a4" />
+
+
+## **3. Annual Income Distribution Pie Chart**
+
+**This code transitions from raw numerical data to a high-level socioeconomic profile of the customer base using **Pandas** and **Matplotlib**.**
+
+### Why  Used
+* **Data Categorization:** The `pd.cut` function is used to simplify complex financial data. Instead of looking at dozens of individual salary figures, it groups them into three meaningful buckets: **Low**, **Medium**, and **High** income.
+* **Proportional Analysis:** A **pie chart** is chosen because it is the most effective way to visualize "parts of a whole." It allows you to see the market share each income group holds within your business.
+* **Automated Calculation:** The `autopct` feature automatically calculates percentages so you don't have to perform manual math to understand the ratios.
+* **Visual Strategy:** Specific colors are used to differentiate tiers, and a large figure size (10x8) ensures the labels remain readable and professional.
+
+### What the Output Shows 
+The resulting pie chart provides a clear breakdown of the purchasing power within your customer base:
+
+* **Dominant Market (Medium Income):** More than half of your customers—**56.0%**—fall into the "Medium" income bracket ($40k – $80k). This suggests your product or service is most popular with middle-class earners.
+* **Budget Segment (Low Income):** A significant quarter of your audience (**25.0%**) is in the "Low" income category (under $40k). This indicates your brand is still accessible or appealing to entry-level earners or students.
+* **Luxury Segment (High Income):** The smallest portion of your audience, at **19.0%**, consists of "High" income earners (above $80k).
+* **Economic Profile:** The chart reveals a healthy, "stable" business model where the majority of revenue comes from a broad middle-market rather than relying solely on a small group of wealthy individuals.
+
+**In short:** This visualization proves that your brand is a **"mass-market" hit**, with its strongest foothold in the middle-income demographic while maintaining a healthy 25% reach into the budget-conscious segment.
+
+<img width="636" height="659" alt="image" src="https://github.com/user-attachments/assets/16a50418-6df8-47fb-a963-761cbdc73454" />
 
