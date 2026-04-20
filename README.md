@@ -366,5 +366,30 @@ You have successfully completed the entire Data Science pipeline:
 
 **In short:** It turned a messy spreadsheet of 200 customers into a **permanent, reusable AI tool** that can guide business marketing decisions forever.
 
+## PROJECT DASHBOARD:- <a href =" https://github.com/priyanshu2003719/Customer-Segmentation-Analysis/blob/main/customer_app.html">DASHBORD</a>
 
+**MallIQ Intelligence Dashboard** — a complete visual overhaul. 
+
+**Visual Identity**
+- Dark cinematic theme (`#090b10` base) with a glowing grid-line background and ambient color blobs for depth
+- New brand — *MallIQ* with a live clock and animated pulse indicator in the header
+- Typography upgraded to **Syne** (display/headings) + **DM Mono** (data/labels) + **Instrument Serif** (page title) — three distinct voices
+
+**KPI Cards**
+- Glowing radial light effects on hover per card, each with its own accent color
+- Contextual trend badges and staggered fade-up entrance animations
+
+**Gender Section**
+- Animated SVG ring charts showing percentage arcs, replacing plain bars
+- Left accent border color-coding per gender with a ghost icon watermark
+
+**Charts**
+- All Chart.js canvases restyled with dark backgrounds, glowing scatter points, gradient area fills, and cohesive color tokens
+- Donut chart replaces pie, with colored cut-out
+- D3 charts (KDE, Heatmap, Box, Violin, Parallel) rebuilt with gradient fills, refined axis styles, and proper dark-mode contrast
+- Violin plot uses per-gender gradient fills and styled median markers
+- Heatmap uses blue→dark→red diverging scale with Syne numerals
+
+**Filters**
+- Custom-styled selects with SVG arrows, glowing range sliders, and a red-tinted reset button
 
