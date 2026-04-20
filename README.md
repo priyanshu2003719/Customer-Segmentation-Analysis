@@ -368,7 +368,7 @@ You have successfully completed the entire Data Science pipeline:
 
 ## PROJECT DASHBOARD:- <a href = "https://github.com/priyanshu2003719/Customer-Segmentation-Analysis/blob/main/customer_app.html">DASHBORD</a>
 
-**MallIQ Intelligence Dashboard** — a complete visual overhaul. 
+**MallIQ Intelligence Dashboard** 
 
 **Visual Identity**
 - Dark cinematic theme (`#090b10` base) with a glowing grid-line background and ambient color blobs for depth
