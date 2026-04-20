@@ -182,3 +182,22 @@ This is the **"Feature Selection"** step. It strips away irrelevant information 
 
 ### **The Result**
 After this code runs, you will have a list of 10 numbers. When you plot them, you look for the **"Elbow"** (the point where the graph stops dropping sharply and flattens out). That "elbow" tells you exactly how many natural segments exist in your customer base.
+
+**3)Creates a professional visualization known as the **Elbow Method Graph**. This is a diagnostic tool used in K-Means clustering to determine the optimal number of groups (clusters) for your customer data.**
+
+* **Visualization Engine:** It uses **Matplotlib** to plot a line graph where the x-axis is the number of clusters (1–10) and the y-axis is the **WCSS** (Within-Cluster Sum of Squares).
+* **Dynamic Labeling:** The `for` loop and `plt.annotate` functions are used to place the exact WCSS values next to each data point. It uses "Smart Placement" (offsetting text to the right during the steep drop and above during the flat part) so the text never overlaps the line.
+* **Styling:** The code uses high-contrast colors (`#e74c3c` red), dashed lines, and large markers to make the "break point" of the graph obvious to stakeholders.
+
+### **Output**
+It tells a clear story about how your customers should be segmented:
+
+* **The Steep Drop (Clusters 1–3):** Notice the massive jump from **269,981** to **106,348**. This means that splitting your customers into 2 or 3 groups provides a huge increase in "closeness" or similarity within each group.
+* **The "Elbow" (The Optimal Point):** The graph shows a sharp bend or "elbow" at **5 clusters**. 
+    * Before 5, the line is dropping rapidly.
+    * After 5, the line flattens out (from **44,448** down to **23,103**), meaning that adding more clusters provides "diminishing returns."
+* **The Conclusion:** Based on this image, **5 is the magic number**. Dividing your customer base into exactly 5 segments will give you the most statistically significant groups without overcomplicating your marketing strategy.
+
+**In short:** The code builds a decision-making map. The "elbow" at 5 proves that your data naturally settles into five distinct customer personas.
+
+<img width="1035" height="656" alt="image" src="https://github.com/user-attachments/assets/ef033628-2ce7-4dda-95e9-37a5c4e75cd3" />
