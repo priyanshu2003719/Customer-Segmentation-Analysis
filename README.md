@@ -77,17 +77,27 @@ This table explains each step of the Exploratory Data Analysis (EDA) process for
 
 ## **2.Age Distribution Histogram**
 
-**creates a **histogram** with 20 bins to visualize how customers are distributed across different age groups. It is used to identify the **target demographic**. Instead of just looking at the average age, a histogram shows you exactly which age brackets are the most common (peaks) and which are rare (valleys), helping you tailor marketing strategies to the right age groups.**
+---
 
-### **Understanding the Output (The Plot)**
+| Step | What it does | Why it's used |
+| :--- | :--- | :--- |
+| `plt.figure(...)` | Sets the canvas size to 10x8 inches. | Ensures the chart is large enough to read the labels clearly. |
+| `ax.hist(...)` | Bins the age data into 20 groups and colors them purple. | **Histograms** show the "density" of data; it helps you see which age groups are most common. |
+| `ax.bar_label(...)` | Adds the exact count (frequency) above each bar. | Removes guesswork, allowing the viewer to see precise numbers (e.g., "22" instead of "about 20"). |
+| `plt.xlabel/ylabel` | Labels the horizontal and vertical axes. | Provides necessary context so the viewer knows what the numbers represent. |
 
-* **The X-Axis (Age):** Represents the range of ages, from **18 to 70**.
-* **The Y-Axis (Frequency):** Represents how many customers fall into each specific age bucket.
-* **The Peaks:** You will notice a high concentration of customers in their **late 20s to late 30s**. This is your "core" customer base.
-* **The Distribution:**
-    * There is a significant spike around the **30–35 age range**, indicating a young adult focus.
-    * The frequency gradually tapers off as age increases, showing fewer customers over the age of **60**.
-* **`ax.bar_label`:** Just like in the previous chart, this adds the exact count on top of every bar, so you can see exactly how many people are in each specific 2–3 year age interval.
+---
+
+## Output
+
+The resulting image is a **right-skewed histogram**, which tells us several things about your customer base:
+
+* **Primary Peak (The Core Demographic):** There is a significant concentration of customers in their **early 30s**, with the highest frequency (22 people) appearing between ages 30–33.
+* **Secondary Peak:** There is a noticeable "bump" in the **late 40s** (18 people), suggesting a secondary target market.
+* **The "Long Tail":** As age increases beyond 50, the frequency generally declines. The "valleys" (like age 55 or 60–65) indicate age groups where your product or service has the least penetration.
+* **Younger Audience:** There is also a strong showing of customers in their **late teens and early 20s**, showing the brand has appeal across multiple generations, though it leans younger.
+
+**In gist:** The code is designed to prove that your "typical" customer is roughly 30–35 years old, while also highlighting that you have a smaller, consistent following of older adults up to age 70.
 
   <img width="841" height="702" alt="image" src="https://github.com/user-attachments/assets/66932cbb-17ae-481c-8844-854fd29837a4" />
 
