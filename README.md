@@ -196,7 +196,7 @@ It tells a clear story about how your customers should be segmented:
 * **The "Elbow" (The Optimal Point):** The graph shows a sharp bend or "elbow" at **5 clusters**. 
     * Before 5, the line is dropping rapidly.
     * After 5, the line flattens out (from **44,448** down to **23,103**), meaning that adding more clusters provides "diminishing returns."
-* **The Conclusion:** Based on this image, **5 is the magic number**. Dividing your customer base into exactly 5 segments will give you the most statistically significant groups without overcomplicating your marketing strategy.
+* **The Conclusion:** Based on this **5 is the magic number**. Dividing your customer base into exactly 5 segments will give you the most statistically significant groups without overcomplicating your marketing strategy.
 
 **In short:** The code builds a decision-making map. The "elbow" at 5 proves that your data naturally settles into five distinct customer personas.
 
